@@ -4,12 +4,13 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
+@SuppressWarnings("serial")
 public class StringListTable extends ListTable{
-	protected AbstractTableModel tableModel;
-	List<List<String>> stringList;
+	private List<List<String>> stringList;
 	
 	public StringListTable(List<List<String>> stringList) {
-		setModel(tableModel = new StringListTableModel(this.stringList = stringList));
+		this.stringList = stringList;
+		setModel(tableModel = new StringListTableModel());
 	}
 	
 	public AbstractTableModel getModel() {
@@ -25,12 +26,6 @@ public class StringListTable extends ListTable{
 	}
 	
 	private class StringListTableModel extends AbstractTableModel {
-		private List<List<String>> stringList;
-		
-		public StringListTableModel(List<List<String>> stringList) {
-			this.stringList = stringList;
-		}
-
 		@Override
 		public boolean isCellEditable(int row, int column) {
 			return false;

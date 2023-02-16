@@ -88,6 +88,10 @@ public abstract class AbstractButtonPanel {
 		}
 	}
 
+	public void setBackground(Color color) {
+		panel.setBackground(color);
+	}
+	
 	public void setFont(int index, Font font) {
 		buttonList.get(index).setFont(font);
 	}

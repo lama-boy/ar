@@ -5,20 +5,20 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
+@SuppressWarnings("serial")
 public class DataListTable extends ListTable {
-	private DataTableModel tableModel;
+	private List<?> dataList;
 	
 	public DataListTable(List<?> dataList) {
-		tableModel = new DataTableModel(dataList);
+		this.dataList = dataList;
+		tableModel = new DataTableModel();
 		setModel(tableModel);
 	}
 	
 	private class DataTableModel extends AbstractTableModel {
-		private List<?> dataList;
 		private Field[] fields;
 
-		public DataTableModel(List<?> dataList) {
-			this.dataList = dataList;
+		public DataTableModel() {
 			fields = dataList.get(0).getClass().getDeclaredFields();
 			for(Field field : fields) {
 				field.setAccessible(true);

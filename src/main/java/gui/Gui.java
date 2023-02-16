@@ -4,32 +4,61 @@ import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.function.Consumer;
 
-import javax.swing.ImageIcon;
+import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import gui.table.DataListTable;
 import gui.table.StringListTable;
 
 public final class Gui {
+	public static final String NIMBUS = "javax.swing.plaf.nimbus.NimbusLookAndFeel";
+	public static final String WINDOWS = "com.sun.java.swing.plaf.windows.WindowsLookAndFeel";
+    public static final String MOTIF = "com.sun.java.swing.plaf.motif.MotifLookAndFeel";
+    public static final String METAL = "javax.swing.plaf.metal.MetalLookAndFeel";
+//    public static final String MAC = "com.apple.laf.AquaLookAndFeel";
+    
 	private Gui() {}
 	
+	public static Image getResizedImage(String path, int width, int height) {
+		try {
+			return getResizedImage(ImageIO.read(new File(path)), width, height);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public static Image getResizedImage(Image image, int width, int height) {
+		return image.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+	}
+	
+	public static void setLookAndFeel(String className) {
+        try {
+            UIManager.setLookAndFeel(className);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+ 
 	@SuppressWarnings("unchecked")
 	public static JTable createTable(List<?> dataList) {
 		if(dataList.get(0) == null) 
-			return null;
+			return new JTable();
 		
 		if(dataList.get(0) instanceof List) {
 			if(((List<?>)dataList.get(0)).get(0) instanceof String) {
@@ -59,6 +88,10 @@ public final class Gui {
         return new Font(Font.SANS_SERIF, Font.PLAIN, size);
     }
     
+    public static Font createFont(String font, int size) {
+        return new Font(font, Font.PLAIN, size);
+    }
+    
 	public static JButton createButton(String name, Consumer<?> c) {
 		JButton button = new JButton(name);
 		button.addActionListener(e->c.accept(null));
@@ -67,25 +100,15 @@ public final class Gui {
     
 	public static Cursor getResizeCursor(int dirX, int dirY) {
 		int type = Cursor.DEFAULT_CURSOR;
-		if(dirX == -1 && dirY == -1) type = Cursor.NW_RESIZE_CURSOR;
-		else if(dirX == 0 && dirY == -1) type = Cursor.N_RESIZE_CURSOR;
-		else if(dirX == 1 && dirY == -1) type = Cursor.NE_RESIZE_CURSOR;
-		else if(dirX == -1 && dirY == 0) type = Cursor.W_RESIZE_CURSOR;
-		else if(dirX == 1 && dirY == 0) type = Cursor.E_RESIZE_CURSOR;
-		else if(dirX == -1 && dirY == 1) type = Cursor.SW_RESIZE_CURSOR;
-		else if(dirX == 0 && dirY == 1) type = Cursor.S_RESIZE_CURSOR;
-		else if(dirX == 1 && dirY == 1) type = Cursor.SE_RESIZE_CURSOR;
+		if(     dirX == -1 && dirY == -1) 	type = Cursor.NW_RESIZE_CURSOR;
+		else if(dirX ==  0 && dirY == -1) 	type = Cursor.N_RESIZE_CURSOR;
+		else if(dirX ==  1 && dirY == -1) 	type = Cursor.NE_RESIZE_CURSOR;
+		else if(dirX == -1 && dirY ==  0)	type = Cursor.W_RESIZE_CURSOR;
+		else if(dirX ==  1 && dirY ==  0)	type = Cursor.E_RESIZE_CURSOR;
+		else if(dirX == -1 && dirY ==  1)	type = Cursor.SW_RESIZE_CURSOR;
+		else if(dirX ==  0 && dirY ==  1) 	type = Cursor.S_RESIZE_CURSOR;
+		else if(dirX ==  1 && dirY ==  1) 	type = Cursor.SE_RESIZE_CURSOR;
 		return new Cursor(type);
-	}
-	
-	public static JLabel createImageLabel(String fileName, int width, int height) {
-		JLabel label = new JLabel(new ImageIcon(fileName));
-		label.setPreferredSize(new Dimension(width, height));
-		return label;
-	}
-	
-	public static JLabel createIamgeLabel(String fileName) {
-		return new JLabel(new ImageIcon(fileName));
 	}
 	
 	public static boolean confirmDialog(JComponent parent, Object message, String title, int type) {
@@ -138,15 +161,4 @@ public final class Gui {
 		return getFile(null, "", exts);
 	}
 //-------------------------------------------End JFileChooser----------------------------------//
-
-	public static void main(String[] args) {
-        // 사용 예시
-        String[] exts = {"txt", "java", "html"}; // 선택 가능한 확장자 목록
-        File selectedFiles = getFile(); // 현재 디렉토리에서 확장자가 지정된 파일들을 선택
-
-        // 선택된 파일들을 출력
-        System.out.println(selectedFiles.getAbsolutePath());
-        
-        String jarPath = "/path/to/example.jar";
-    }
 }	

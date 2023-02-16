@@ -13,7 +13,7 @@ public class ButtonPanel extends AbstractButtonPanel{
 
 	@Override
 	public void addButton(String name, ImageIcon icon) {
-		settingButton(new JButton(name, icon), null);		
+		addButton(name, icon, null);		
 	}
 
 	@Override
@@ -23,6 +23,8 @@ public class ButtonPanel extends AbstractButtonPanel{
 
 	@Override
 	public void addButton(String name, ImageIcon icon, Consumer<?> c) {
-		settingButton(new JButton(name, icon), c);
+		JButton button = new JButton(icon);
+		button.setName(name);
+		settingButton(button, c);
 	}
 }
