@@ -1,6 +1,7 @@
 package gui.input.button;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.LayoutManager;
@@ -11,15 +12,12 @@ import java.util.stream.Collectors;
 
 import javax.swing.AbstractButton;
 import javax.swing.ImageIcon;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 public abstract class AbstractButtonPanel {
 	private JPanel panel = new JPanel();
 	private List<AbstractButton> buttonList = new Vector<>();
-	
-	public AbstractButtonPanel() {
-		this(new FlowLayout());
-	}
 	
 	public abstract void addButton(String name, Consumer<?> c);
 	
@@ -33,9 +31,7 @@ public abstract class AbstractButtonPanel {
 		return panel;
 	}
 
-	public AbstractButtonPanel(LayoutManager layout) {
-		panel.setLayout(layout);
-	}
+
 
 	public List<AbstractButton> getButtonList() {
 		return buttonList;
@@ -88,6 +84,10 @@ public abstract class AbstractButtonPanel {
 		}
 	}
 
+	public void setSize(int width, int height) {
+		panel.setPreferredSize(new Dimension(width, height));
+	}
+	
 	public void setBackground(Color color) {
 		panel.setBackground(color);
 	}
@@ -114,5 +114,13 @@ public abstract class AbstractButtonPanel {
 
 	public String getValue() {
 		return buttonList.stream().map(b -> b.getName()).collect(Collectors.joining(","));
+	}
+	
+	public void add(JComponent comp) {
+		panel.add(comp);
+	}
+	
+	public void setLayout(LayoutManager layout) {
+		panel.setLayout(layout);
 	}
 }

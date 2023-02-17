@@ -1,9 +1,10 @@
-package gui;
+package test;
 
 import java.awt.Dimension;
 
 import javax.swing.JPanel;
 
+import gui.Gui;
 import gui.input.button.ButtonPanel;
 import gui.input.button.CheckBoxPanel;
 import gui.input.button.RadioButtonPanel;

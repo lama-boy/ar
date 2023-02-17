@@ -1,9 +1,9 @@
 package gui;
 
 import java.awt.Component;
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.Window;
@@ -24,6 +24,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import gui.table.DataListTable;
 import gui.table.StringListTable;
+import gui.wiget.SimpleCalendar;
 
 public final class Gui {
 	public static final String NIMBUS = "javax.swing.plaf.nimbus.NimbusLookAndFeel";
@@ -98,17 +99,20 @@ public final class Gui {
 		return button;
 	}
     
-	public static Cursor getResizeCursor(int dirX, int dirY) {
-		int type = Cursor.DEFAULT_CURSOR;
-		if(     dirX == -1 && dirY == -1) 	type = Cursor.NW_RESIZE_CURSOR;
-		else if(dirX ==  0 && dirY == -1) 	type = Cursor.N_RESIZE_CURSOR;
-		else if(dirX ==  1 && dirY == -1) 	type = Cursor.NE_RESIZE_CURSOR;
-		else if(dirX == -1 && dirY ==  0)	type = Cursor.W_RESIZE_CURSOR;
-		else if(dirX ==  1 && dirY ==  0)	type = Cursor.E_RESIZE_CURSOR;
-		else if(dirX == -1 && dirY ==  1)	type = Cursor.SW_RESIZE_CURSOR;
-		else if(dirX ==  0 && dirY ==  1) 	type = Cursor.S_RESIZE_CURSOR;
-		else if(dirX ==  1 && dirY ==  1) 	type = Cursor.SE_RESIZE_CURSOR;
-		return new Cursor(type);
+	public static String openCalendar() {
+		return openCalendar(null, null);
+	}
+	
+	public static String openCalendar(Frame frame) {
+		return openCalendar(frame, null);
+	}
+	
+	public static String openCalendar(String string) {
+		return openCalendar(null, string);
+	}
+	
+	public static String openCalendar(Frame frame, String format) {
+		return new SimpleCalendar(frame, format).open();
 	}
 	
 	public static boolean confirmDialog(JComponent parent, Object message, String title, int type) {

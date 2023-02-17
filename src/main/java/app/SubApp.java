@@ -11,6 +11,7 @@ public abstract class SubApp implements Comparable<SubApp>{
 	public final JPanel getPanel() {
 		return rootPanel;
 	}
+	
 	//--------------선택적 Override Methods -----------------
 	public String getTitle() {
 		return this.getClass().getSimpleName(); //기본값은 클래스 이름입니다. 쉽게 알아볼수 있는 이름으로 Override 하기
@@ -22,7 +23,7 @@ public abstract class SubApp implements Comparable<SubApp>{
 	
 	/**
 	 * SubApp 이 닫힐때 해야할 작업이 있다면 작성하세요 (예: 정보 저장)
-	 * false 를 리턴할 경우 AppContainer 는 해당 엡을 닫지 않습니다. 
+	 * false 를 리턴할 경우 AppContainer 는 해당 앱을 닫지 않습니다. 
 	 */
 	public boolean close() {
 		return true;

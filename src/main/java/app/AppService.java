@@ -3,9 +3,6 @@ package app;
 
 import static java.lang.Integer.parseInt;
 
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
@@ -20,19 +17,12 @@ public class AppService {
 	private AppContainer appContainer = new AppContainer();
 	private SqlUtil sql = new SqlUtil(DAO.getDataSource());
 	private static AppService appService;
-	
-	public static AppService getInstance() {
-		if(appService == null) return appService = new AppService();
-		else return appService;
-	}
-
 	private Member member;
 	
+	public static AppService getInstance() {
+		return appService == null ? appService = new AppService() : appService;
+	}
 	private AppService() {}
-	
-	public Member member() { 
-		return member;
-	};
 	
 	public void setMember(Member member) {
 		this.member = member;
@@ -43,14 +33,18 @@ public class AppService {
 	
 	public void addSubApp(SubApp subApp) {
 		appList.add(subApp);
-		appContainer.addSubAppIcon(subApp);
+		appContainer.addAppIcon(subApp);
 	}
 	
 	public void start(Properties config) {
-		int width = parseInt(config.getProperty("width", "500"));
-		int height = parseInt(config.getProperty("height", "500"));
-		appContainer.display(width, height);
-		appContainer.addPanel(getSubApp(LoginApp.class));
+		int width = parseInt(config.getProperty("width", "700"));
+		int height = parseInt(config.getProperty("height", "700"));
+		
+		appContainer.initComponent(width, height);
+		
+		//시작시 LoginApp 을 실행시킨다.
+		appContainer.addAppPanel(getSubApp(LoginApp.class));
+		update();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -73,10 +67,6 @@ public class AppService {
 	}
 	
 	public void update() {
-		LocalDateTime time = LocalDateTime.now();
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-	    String formattedTime = time.format(formatter);
-		appContainer.update(formattedTime);
-		appList.forEach(a->a.update(time));
+		appContainer.update();
 	}
 }

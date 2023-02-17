@@ -57,5 +57,6 @@ public class LoginApp extends SubApp {
 	//** 테스트 용 main 입니다. 프로젝트에는 rootPane 만을 사용합니다. **//
 	public static void main(String[] args) {
 		LoginApp loginApp = new LoginApp();
+		
 	}
 }

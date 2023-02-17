@@ -8,16 +8,16 @@ import javax.sql.DataSource;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
-import test.Debug;
+//import oracle.jdbc.pool.OracleDataSource;
 
 public class DAO {
-	private static final String url = "jdbc:oracle:thin:@//192.168.0.213:1521/xe";
+	private static final String url = "jdbc:oracle:thin:@//localhost:1521/xe";
 	private static final String user = "ar";
 	private static final String password = "1234";
 	
-	private DAO() {}
+	private static HikariDataSource dataSource;
 
-	private static HikariDataSource hikariDataSource;
+	private DAO() {}
 
 	public static Connection getConnection() {
 		try {
@@ -29,10 +29,10 @@ public class DAO {
 	}
 
 	public static DataSource getDataSource() {
-		if(hikariDataSource == null) {
+		if(dataSource == null) {
 			return initDataSource();
 		}else 
-			return hikariDataSource;
+			return dataSource;
 	}
 
 	public static DataSource initDataSource() {
@@ -40,7 +40,7 @@ public class DAO {
 	}
 	
 	public static DataSource initDataSource(String url, String user, String password) {
-		if(hikariDataSource == null) {
+		if(dataSource == null) {
 			HikariConfig config = new HikariConfig();
 			config.setJdbcUrl(url);
 			config.setUsername(user);
@@ -48,8 +48,22 @@ public class DAO {
 			config.setMaximumPoolSize(3);
 			config.setConnectionTimeout(30000);
 			config.setValidationTimeout(5000);
-			return hikariDataSource = new HikariDataSource(config);
+			return dataSource = new HikariDataSource(config);
 		}
-		return hikariDataSource;
+		return dataSource;
 	}
+	
+//	public static DataSource initDataSource(String url, String user, String password) {
+//		OracleDataSource dataSource = null;
+//		try {
+//			dataSource = new OracleDataSource();
+//			dataSource.setURL(url);
+//			dataSource.setUser(user);
+//			dataSource.setPassword(password);
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		return dataSource;
+//	}
 }

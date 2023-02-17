@@ -2,7 +2,6 @@ package app;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.Properties;
 
 import javax.swing.Timer;
@@ -33,14 +32,22 @@ public class ArApplication {
 		}
 	}
 	
+	//앱 추가부분
 	public void run() {
 		AppService service = AppService.getInstance();
 		service.addSubApp(new Reservation());
 		service.addSubApp(new DashBoard());
 		service.addSubApp(new LoginApp());
+		service.addSubApp(null);
+		service.addSubApp(null);
+		service.addSubApp(null);
+		service.addSubApp(null);
+		service.addSubApp(null);
+		service.addSubApp(null);
 		service.start(config);
+		
+		//전체 동작 타이머 시작
 		Timer timer = new Timer(1000, e->service.update());
-			
 		timer.start();
 	}
 }

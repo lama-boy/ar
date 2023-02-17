@@ -1,8 +1,5 @@
 package test;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 public final class Debug {
 //	private static final Logger LOG = LogManager.getLogger(Debug.class);
 //
