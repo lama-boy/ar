@@ -26,6 +26,8 @@ public abstract class AbstractButtonPanel {
 	
 	public abstract void addButton(String name, ImageIcon icon);
 
+	public abstract void addButton(ImageIcon icon, Consumer<?> c);
+
 	public JPanel getPanel() {
 		return panel;
 	}

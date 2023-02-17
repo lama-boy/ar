@@ -1,13 +1,10 @@
 package app;
 
 
-import static java.lang.Integer.parseInt;
-
 import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
 
-import app.login.LoginApp;
 import dao.DAO;
 import dao.SqlUtil;
 import entity.Member;

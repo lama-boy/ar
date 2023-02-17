@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
 import javax.swing.JRadioButton;
 
 public class RadioButtonPanel extends AbstractButtonPanel{
@@ -30,6 +31,11 @@ public class RadioButtonPanel extends AbstractButtonPanel{
 		settingButton(new JRadioButton(name, icon), null);
 	}
 
+	@Override
+	public void addButton(ImageIcon icon, Consumer<?> c) {
+		settingButton(new JRadioButton(icon), null);
+	}
+	
 	@Override
 	public void settingButton(AbstractButton button, Consumer<?> c) {
 		buttonGroup.add(button);

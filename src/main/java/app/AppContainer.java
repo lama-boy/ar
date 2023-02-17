@@ -24,7 +24,6 @@ import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -49,6 +48,8 @@ public class AppContainer {
 	private Border iconLineBorder, iconEmptyBorder = BorderFactory.createEmptyBorder(2,2,2,2);
 	private Font timeLabelFont = new Font(Font.SANS_SERIF,Font.PLAIN,17);
 	
+	JFrame frame = new JFrame();
+	
 	public void setStyle(int style) {
 		this.style = style;
 		contBg = Color.decode(config.getProperty("contBg"+style, "#FAEECB")); 
@@ -56,6 +57,8 @@ public class AppContainer {
 		topBotColor = Color.decode(config.getProperty("topBotColor"+style, "#001130"));
 	    lineColor = Color.decode(config.getProperty("lineColor"+style, "#FF0000"));
 	    iconLineBorder = BorderFactory.createLineBorder(lineColor, 2);
+	    
+	    
 	}
 	//+++++++++++++++++++++++++++++++++++Style+++++++++++++++++++++++++++++++
 	//size
@@ -66,6 +69,7 @@ public class AppContainer {
 	
     public void initComponent() {
     	if(style == 0 ) setStyle(1);
+    	frame.dispose();
     	runAppList.clear();
     	container.removeAll();
     	rootPane.removeAll();
@@ -91,10 +95,10 @@ public class AppContainer {
 		
 		ButtonPanel botBtnPanel = new ButtonPanel();
 		botBtnPanel.setBackground(topBotColor);
-		botBtnPanel.addButton("", new ImageIcon(IMG_PATH+"leftarrow.png"), b->move(-1));
-		botBtnPanel.addButton("", new ImageIcon(IMG_PATH+"home.png"), b->move(0));
-		botBtnPanel.addButton("", new ImageIcon(IMG_PATH+"rightarrow.png"), b->move(1));
-		botBtnPanel.addButton("", new ImageIcon(IMG_PATH+"close.png"), b->move(2));
+		botBtnPanel.addButton(new ImageIcon(IMG_PATH+"leftarrow.png"), b->move(-1));
+		botBtnPanel.addButton(new ImageIcon(IMG_PATH+"home.png"), b->move(0));
+		botBtnPanel.addButton(new ImageIcon(IMG_PATH+"rightarrow.png"), b->move(1));
+		botBtnPanel.addButton(new ImageIcon(IMG_PATH+"close.png"), b->move(2));
 		
 		timeLabel.setHorizontalAlignment(JLabel.CENTER);
 		timeLabel.setFont(timeLabelFont);
@@ -111,16 +115,15 @@ public class AppContainer {
 		
 		container.setName("Container");
 		card.add(container, container.getName());
-	
-		JFrame frame = new JFrame();
+		
+		AppService.getInstance().addSubAppIcons();
+
+		frame = new JFrame("항공권 예약 시스템");
 		frame.setContentPane(rootPane);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.pack();
-		frame.setTitle("비행기 예약 시스템");
 		frame.setVisible(true);
 		Gui.moveToCenter(frame);
-		
-		AppService.getInstance().addSubAppIcons();
 	}
 	
 	public void removePanel(SubApp subApp) {
@@ -150,8 +153,8 @@ public class AppContainer {
 			JLabel iconLabel = new JLabel(new ImageIcon(image));
 			iconPanel.setCursor(new Cursor(Cursor.HAND_CURSOR));
 			iconPanel.setBorder(iconEmptyBorder);
-			iconPanel.addMouseListener(new MouseAdapter() { 
-				public void mouseClicked(MouseEvent e) { addAppPanel(subApp); }
+			iconPanel.addMouseListener(new MouseAdapter() {
+				public void mouseReleased(MouseEvent e) { sysout(1234);addAppPanel(subApp); }
 				public void mouseEntered(MouseEvent e) { iconPanel.setBorder(iconLineBorder); }
 				public void mouseExited(MouseEvent e) { iconPanel.setBorder(iconEmptyBorder); }
 			});
@@ -194,6 +197,9 @@ public class AppContainer {
 			setStyle(2); 
 			initComponent();
 		}
+		
+		if(i==3)
+			AppService.getInstance().addSubAppIcons();
 		sysout(i);
 	}
 }

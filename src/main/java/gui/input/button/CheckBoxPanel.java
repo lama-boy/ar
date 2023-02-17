@@ -29,6 +29,11 @@ public class CheckBoxPanel extends AbstractButtonPanel{
 	public void addButton(String name, ImageIcon icon) {
 		settingButton(new JCheckBox(name, icon), null);
 	}
+	
+	@Override
+	public void addButton(ImageIcon icon, Consumer<?> c) {
+		settingButton(new JCheckBox(icon), null);
+	}
 
 	@Override
 	public String getValue() {

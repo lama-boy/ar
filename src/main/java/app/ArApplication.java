@@ -14,14 +14,13 @@ import gui.Gui;
 public class ArApplication {
 	public static final String RES_PATH = "src/main/resources/";
 	public static final String IMG_PATH = RES_PATH + "images/";
-	public static final String AIR_PATH = RES_PATH + "/upload/directory/airline/icon/dhk.gif";
 	
 	public static Properties config;
 	
 	public static void main(String[] args) {
 		Gui.setLookAndFeel(Gui.NIMBUS);
 		loadConfig();
-		new ArApplication().run();;
+		new ArApplication().run();
 	}
 
 	public static void loadConfig() {
