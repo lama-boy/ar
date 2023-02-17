@@ -76,6 +76,7 @@ public final class Gui {
 		frame.pack();
 		frame.setVisible(true);
 		return frame;
+		
 	}
 	
 	public static void moveToCenter(Window window) {

@@ -24,11 +24,6 @@ public class Reservation extends SubApp {
 		return "Reservation";
 	}
 
-	@Override
-	public String getIconName() {
-		return "heart.png";
-	}
-	
 	public static void main(String[] args) {
 		JFrame frame = new JFrame();
 		Reservation r = new Reservation();

@@ -14,11 +14,13 @@ public abstract class SubApp implements Comparable<SubApp>{
 	
 	//--------------선택적 Override Methods -----------------
 	public String getTitle() {
-		return this.getClass().getSimpleName(); //기본값은 클래스 이름입니다. 쉽게 알아볼수 있는 이름으로 Override 하기
+		//기본값은 클래스 이름입니다. 쉽게 알아볼수 있는 이름으로 Override 하기
+		return getClass().getSimpleName(); 
 	}
 	
 	public void update(LocalDateTime time) {
-		//1초마다 호출됨
+		//실행 중인 앱은 update() 1초마다 호출됨
+		//시간흐름 관련 기능을 추가 하고싶으면 오버라이드해서 사용
 	}
 	
 	/**
@@ -28,15 +30,7 @@ public abstract class SubApp implements Comparable<SubApp>{
 	public boolean close() {
 		return true;
 	}
-	
-	/**
-	 * 100x100 권장<br>
-	 * 폴더는 적지말것<br>
-	 * @return "imageFile.png"
-	 */
-	public String getIconName() {
-		return "heart.png";
-	} 
+	//-------------------------------------------------------
 	
 	@Override
 	public int compareTo(SubApp another) {

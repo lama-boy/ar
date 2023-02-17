@@ -40,11 +40,6 @@ public class LoginApp extends SubApp {
 		panel.add(buttonPanel.getPanel());
 	}
 
-	@Override
-	public String getIconName() {
-		return "heartBlack.png";
-	}
-
 	private void join() {
 		sysout("join");
 	}

@@ -17,7 +17,7 @@ public class AppService {
 	private AppContainer appContainer = new AppContainer();
 	private SqlUtil sql = new SqlUtil(DAO.getDataSource());
 	private static AppService appService;
-	private Member member;
+	private Member member = new Member();
 	
 	public static AppService getInstance() {
 		return appService == null ? appService = new AppService() : appService;
@@ -33,17 +33,16 @@ public class AppService {
 	
 	public void addSubApp(SubApp subApp) {
 		appList.add(subApp);
-		appContainer.addAppIcon(subApp);
+	}
+	
+	public void addSubAppIcons() {
+		appList.forEach(subApp->appContainer.addAppIcon(subApp));
 	}
 	
 	public void start(Properties config) {
-		int width = parseInt(config.getProperty("width", "700"));
-		int height = parseInt(config.getProperty("height", "700"));
-		
-		appContainer.initComponent(width, height);
-		
+		appContainer.initComponent();
 		//시작시 LoginApp 을 실행시킨다.
-		appContainer.addAppPanel(getSubApp(LoginApp.class));
+//		appContainer.addAppPanel(getSubApp(LoginApp.class));
 		update();
 	}
 	

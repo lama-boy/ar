@@ -2,7 +2,6 @@ package gui.input.button;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.LayoutManager;
 import java.util.List;
@@ -30,8 +29,6 @@ public abstract class AbstractButtonPanel {
 	public JPanel getPanel() {
 		return panel;
 	}
-
-
 
 	public List<AbstractButton> getButtonList() {
 		return buttonList;

@@ -136,9 +136,10 @@ public class SimpleCalendar {
 		
 		for(int d = 0; d< (rows-1) * cols; d++){
 			date = startDate.plusDays(d);
-			days.get(d).date = date;
-			days.get(d).isCurrentMonth = month == date.getMonthValue();
-			days.get(d).setDay(date.getDayOfMonth(), date.getDayOfWeek().getValue());
+			DayPanel dayPanel = days.get(d);
+			dayPanel.date = date;
+			dayPanel.isCurrentMonth = month == date.getMonthValue();
+			dayPanel.setDay(date.getDayOfMonth(), date.getDayOfWeek().getValue());
 		}
 	}
 

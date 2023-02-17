@@ -8,9 +8,4 @@ public class DashBoard extends SubApp {
 	public String getTitle() {
 		return "DashBoard";
 	}
-
-	@Override
-	public String getIconName() {
-		return "markX.png";
-	}
 }

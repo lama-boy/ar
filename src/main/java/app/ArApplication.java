@@ -14,8 +14,9 @@ import gui.Gui;
 public class ArApplication {
 	public static final String RES_PATH = "src/main/resources/";
 	public static final String IMG_PATH = RES_PATH + "images/";
+	public static final String AIR_PATH = RES_PATH + "/upload/directory/airline/icon/dhk.gif";
 	
-	private static Properties config;
+	public static Properties config;
 	
 	public static void main(String[] args) {
 		Gui.setLookAndFeel(Gui.NIMBUS);
