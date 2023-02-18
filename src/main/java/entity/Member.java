@@ -1,7 +1,17 @@
 package entity;
 
 public class Member {
-	private String id, name, email;
+	private String id, password, name;
+	
+	public Member() {
+		this("unknownid","1234","noname");
+	}
+	
+	public Member(String id, String password, String name) {
+		this.id = id;
+		this.password = password;
+		this.name = name;
+	}
 	
 	public String getId() {
 		return id;
@@ -15,10 +25,10 @@ public class Member {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String getEmail() {
-		return email;
+	public String getPassword() {
+		return password;
 	}
-	public void setEmail(String email) {
-		this.email = email;
+	public void setPassword(String password) {
+		this.password = password;
 	}
 }

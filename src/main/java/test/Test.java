@@ -27,10 +27,7 @@ public class Test {
 		Member member = new Member();
 		member.setId("123");
 		member.setName("aa123");
-		member.setEmail("Naver");
 		s.insert("members", member);
-		
-		ArApplication.loadConfig();
 		
 		Gui.createFrame(Gui.createTable(null));
 	}

@@ -33,10 +33,10 @@ public class AppService {
 	}
 	
 	public void addSubAppIcons() {
-		appList.forEach(subApp->appContainer.addAppIcon(subApp));
+		appContainer.addAppIcons(appList);
 	}
 	
-	public void start(Properties config) {
+	public void start() {
 		appContainer.initComponent();
 		//시작시 LoginApp 을 실행시킨다.
 //		appContainer.addAppPanel(getSubApp(LoginApp.class));
@@ -53,8 +53,12 @@ public class AppService {
 		return null;
 	}
 	
-	public boolean close(SubApp subApp) {
-		appContainer.removePanel(subApp);
+	public void openView(AppView subAppView) {
+		appContainer.openView(subAppView);
+	}
+	
+	public boolean closeView(AppView subAppView) {
+		appContainer.removeView(subAppView);
 		return true;
 	}
 	

@@ -1,9 +1,7 @@
-package gui.input.button;
+package gui.panel.button;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.LayoutManager;
 import java.util.List;
 import java.util.Vector;
 import java.util.function.Consumer;
@@ -11,11 +9,9 @@ import java.util.stream.Collectors;
 
 import javax.swing.AbstractButton;
 import javax.swing.ImageIcon;
-import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-public abstract class AbstractButtonPanel {
-	private JPanel panel = new JPanel();
+public abstract class AbstractButtonPanel extends JPanel{
 	private List<AbstractButton> buttonList = new Vector<>();
 	
 	public abstract void addButton(String name, Consumer<?> c);
@@ -28,10 +24,6 @@ public abstract class AbstractButtonPanel {
 
 	public abstract void addButton(ImageIcon icon, Consumer<?> c);
 
-	public JPanel getPanel() {
-		return panel;
-	}
-
 	public List<AbstractButton> getButtonList() {
 		return buttonList;
 	}
@@ -42,7 +34,7 @@ public abstract class AbstractButtonPanel {
 		if (c != null) {
 			button.addActionListener(e -> c.accept(null));
 		}
-		panel.add(button);
+		add(button);
 	}
 
 	public List<String> getValues() {
@@ -83,14 +75,6 @@ public abstract class AbstractButtonPanel {
 		}
 	}
 
-	public void setSize(int width, int height) {
-		panel.setPreferredSize(new Dimension(width, height));
-	}
-	
-	public void setBackground(Color color) {
-		panel.setBackground(color);
-	}
-	
 	public void setFont(int index, Font font) {
 		buttonList.get(index).setFont(font);
 	}
@@ -110,16 +94,8 @@ public abstract class AbstractButtonPanel {
 	public void clearSelection() {
 		buttonList.forEach(b -> { b.setSelected(false); });
 	}
-
+	
 	public String getValue() {
 		return buttonList.stream().map(b -> b.getName()).collect(Collectors.joining(","));
-	}
-	
-	public void add(JComponent comp) {
-		panel.add(comp);
-	}
-	
-	public void setLayout(LayoutManager layout) {
-		panel.setLayout(layout);
 	}
 }

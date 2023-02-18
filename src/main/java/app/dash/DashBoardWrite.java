@@ -1,4 +1,4 @@
-package app.login;
+package app.dash;
 
 import java.util.List;
 
@@ -11,27 +11,27 @@ import app.AppService;
 import app.AppView;
 import gui.panel.button.ButtonPanel;
 
-public class LoginInputForm extends AppView{
-	private LoginApp login;
+public class DashBoardWrite extends AppView{
+	private DashBoard dash;
 
-	public LoginInputForm(LoginApp login) {
-		this.login = login;
+	public DashBoardWrite(DashBoard dash) {
+		this.dash = dash;
 		List<String> result = AppService.getInstance().sql().selectOne("select id, password from members where id = 'ydk'");
 		JPanel panel = new JPanel();
 
-		panel.add(new JLabel("Login ID"));
+		panel.add(new JLabel("DASHBOARD VIEW"));
 		JTextField textField = new JTextField(10);
 		textField.setText(result.get(0));
 		panel.add(textField);
 
-		panel.add(new JLabel("PW"));
+		panel.add(new JLabel("DASHBOARD VIEW!!"));
 		JPasswordField passwordField = new JPasswordField(10);
 		panel.add(passwordField);
 		passwordField.setText(result.get(1));
 		
 		ButtonPanel buttonPanel = new ButtonPanel();
-		buttonPanel.addButton("Login",b->login.login());
-		buttonPanel.addButton("Join", b->login.join());
+		buttonPanel.addButton("SAVE",b->dash.save());
+		buttonPanel.addButton("OPEN LIST", b->dash.openList());
 
 		panel.add(buttonPanel);
 		rootPanel.add(panel);

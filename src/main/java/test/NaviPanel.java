@@ -5,9 +5,9 @@ import java.awt.Dimension;
 import javax.swing.JPanel;
 
 import gui.Gui;
-import gui.input.button.ButtonPanel;
-import gui.input.button.CheckBoxPanel;
-import gui.input.button.RadioButtonPanel;
+import gui.panel.button.ButtonPanel;
+import gui.panel.button.CheckBoxPanel;
+import gui.panel.button.RadioButtonPanel;
 
 public class NaviPanel{
 	public NaviPanel() {
@@ -19,7 +19,6 @@ public class NaviPanel{
 		buttonPanel.addButton("1click", c->print(1));
 		buttonPanel.addButton("2click", c->print(2));
 		
-		content.add(buttonPanel.getPanel());
 		
 		RadioButtonPanel rbPanel = new RadioButtonPanel();
 		rbPanel.addButton("1click", c->print(1));
@@ -28,7 +27,7 @@ public class NaviPanel{
 		rbPanel.addButton("2click", c->print(2));
 		rbPanel.setSelected(true, "2click");
 		
-		content.add(rbPanel.getPanel());
+		content.add(rbPanel);
 		
 		CheckBoxPanel cbpanel = new CheckBoxPanel();
 		for (int i = 0; i < 3; i++) {
@@ -42,7 +41,7 @@ public class NaviPanel{
 //		cbpanel.setSelected(2);
 		cbpanel.setSelected(0);
 		
-		content.add(cbpanel.getPanel());
+		content.add(cbpanel);
 		
 		Gui.createFrame(content);
 		System.out.println(rbPanel.getValue());

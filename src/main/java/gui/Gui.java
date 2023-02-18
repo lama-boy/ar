@@ -13,10 +13,12 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.UIManager;
@@ -34,6 +36,18 @@ public final class Gui {
 //    public static final String MAC = "com.apple.laf.AquaLookAndFeel";
     
 	private Gui() {}
+	
+	public static JLabel createIconLabel(Image image, int width, int height) {
+		return new JLabel(new ImageIcon(getResizedImage(image, width, height)));
+	}
+	
+	public static ImageIcon getResizedIcon(String path, int width, int height) {
+		return new ImageIcon(getResizedImage(path, width, height));
+	}
+	
+	public static ImageIcon getResizedIcon(ImageIcon icon, int width, int height) {
+		return new ImageIcon(getResizedImage(icon.getImage(), width, height));
+	}
 	
 	public static Image getResizedImage(String path, int width, int height) {
 		try {

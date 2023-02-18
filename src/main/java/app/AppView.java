@@ -3,19 +3,27 @@ package app;
 import java.time.LocalDateTime;
 
 import javax.swing.ImageIcon;
+import javax.swing.JPanel;
 
-public abstract class SubApp implements Comparable<SubApp>{
-	private int index;
-	protected AppView subAppView;
+public abstract class AppView {
+	protected JPanel rootPanel = new JPanel();
+	private ImageIcon icon;
+	
+	public final JPanel getPanel() {
+		return rootPanel;
+	}
 	
 	//--------------선택적 Override Methods -----------------
 	public String getTitle() {
-		//기본값은 클래스 이름입니다. 쉽게 알아볼수 있는 이름으로 Override 하기
-		return getClass().getSimpleName(); 
+		return getClass().getSimpleName();
 	}
 	
-	public String getImagePath() {
-		return ArApplication.IMG_PATH+getClass().getSimpleName()+".PNG";
+	public void setImageIcon(ImageIcon icon) {
+		this.icon = icon;
+	}
+	
+	public ImageIcon getImageIcon() {
+		return icon;
 	}
 	
 	public void update(LocalDateTime time) {
@@ -31,13 +39,4 @@ public abstract class SubApp implements Comparable<SubApp>{
 		return true;
 	}
 	//-------------------------------------------------------
-	
-	@Override
-	public int compareTo(SubApp another) {
-		int c = another.index - this.index;
-		if(c == 0) return this.getTitle().compareTo(another.getTitle());
-		else return c;
-	}
-	
-	public abstract AppView requestView();
 }
