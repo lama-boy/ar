@@ -5,9 +5,39 @@ import java.time.LocalDateTime;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
+import gui.Gui;
+
 public abstract class AppView {
 	protected JPanel rootPanel = new JPanel();
+	protected SubApp parentApp;
+	private String title;
 	private ImageIcon icon;
+	
+//	private AppView() {
+//		this(null, null);
+//	}
+	
+	public abstract JPanel initRootPanel();
+	
+	public AppView() {
+		this(null, null);
+	}
+	
+	public AppView(String title) {
+		this(title, null);
+	}
+
+	public AppView(SubApp parentApp) {
+		this(null, parentApp);
+	}
+	
+	public AppView(String title, SubApp parentApp) {
+		this.title = title;
+		if(parentApp != null) {
+			this.parentApp = parentApp;
+			setImageIcon(Gui.getResizedIcon(parentApp.getImagePath(), 35, 35));
+		}
+	}
 	
 	public final JPanel getPanel() {
 		return rootPanel;
@@ -15,7 +45,7 @@ public abstract class AppView {
 	
 	//--------------선택적 Override Methods -----------------
 	public String getTitle() {
-		return getClass().getSimpleName();
+		return title == null || title.isEmpty() ? getClass().getSimpleName() : title;
 	}
 	
 	public void setImageIcon(ImageIcon icon) {

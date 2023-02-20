@@ -21,7 +21,6 @@ public class Test {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		DAO.initDataSource(config.getProperty("url"), config.getProperty("user"), config.getProperty("password"));
 //		JdbcTemplate t = new JdbcTemplate(DAO.getDataSource());
 		SqlUtil s = new SqlUtil(DAO.getDataSource());
 		Member member = new Member();

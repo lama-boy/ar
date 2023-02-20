@@ -9,6 +9,7 @@ import javax.swing.JTextField;
 
 import app.AppService;
 import app.AppView;
+import dao.DAO;
 import gui.panel.button.ButtonPanel;
 
 public class DashBoardList extends AppView{
@@ -16,7 +17,16 @@ public class DashBoardList extends AppView{
 
 	public DashBoardList(DashBoard dash) {
 		this.dash = dash;
-		List<String> result = AppService.getInstance().sql().selectOne("select id, password from members where id = 'ydk'");
+		
+	}
+	
+	public boolean validate() {
+		return false;
+	}
+
+	@Override
+	public JPanel initRootPanel() {
+		List<String> result = DAO.sql.selectOne("select * from members where id='ydk'");
 		JPanel panel = new JPanel();
 
 		panel.add(new JLabel("DASHBOARDLIST"));
@@ -33,10 +43,7 @@ public class DashBoardList extends AppView{
 		buttonPanel.addButton("OPEN WRITE",b->dash.openWrite());
 
 		panel.add(buttonPanel);
-		rootPanel.add(panel);
-	}
-	
-	public boolean validate() {
-		return false;
+		rootPanel.add(panel);	
+		return rootPanel;
 	}
 }

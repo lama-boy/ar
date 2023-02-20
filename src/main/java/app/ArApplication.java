@@ -24,9 +24,11 @@ public class ArApplication {
 		service.addSubApp(new DashBoard());
 		service.addSubApp(new LoginApp());
 		service.start();
+
+		//앱 시작시 로그인 창을 띄운다
+//		service.openView(service.getSubApp(LoginApp.class).requestView());
 		
 		//전체 동작 타이머 시작
-		Timer timer = new Timer(1000, e->service.update());
-		timer.start();
+		new Timer(1000, e->service.update()).start();
 	}
 }

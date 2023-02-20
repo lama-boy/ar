@@ -11,46 +11,37 @@ import com.zaxxer.hikari.HikariDataSource;
 //import oracle.jdbc.pool.OracleDataSource;
 
 public class DAO {
+	
 	private static final String url = "jdbc:oracle:thin:@//localhost:1521/xe";
 	private static final String user = "ar";
 	private static final String password = "1234";
 	
 	private static HikariDataSource dataSource;
 
-	private DAO() {}
+    private static final Object lock = new Object();
+    public static final SqlUtil sql;
+    static { synchronized (lock) { sql = new SqlUtil(getDataSource()); }}	
 
-	public static Connection getConnection() {
-		try {
-			return getDataSource().getConnection();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+    private DAO() {}
+
+    public static Connection getConnection() {
+		try { return getDataSource().getConnection(); } catch (SQLException e) {e.printStackTrace(); }
 		return null;
 	}
 
 	public static DataSource getDataSource() {
-		if(dataSource == null) {
-			return initDataSource();
-		}else 
-			return dataSource;
+		return dataSource == null ? initDataSource(url, user, password) : dataSource;
 	}
 
-	public static DataSource initDataSource() {
-		return initDataSource(url, user, password);
-	}
-	
-	public static DataSource initDataSource(String url, String user, String password) {
-		if(dataSource == null) {
-			HikariConfig config = new HikariConfig();
-			config.setJdbcUrl(url);
-			config.setUsername(user);
-			config.setPassword(password);
-			config.setMaximumPoolSize(3);
-			config.setConnectionTimeout(30000);
-			config.setValidationTimeout(5000);
-			return dataSource = new HikariDataSource(config);
-		}
-		return dataSource;
+	private static DataSource initDataSource(String url, String user, String password) {
+		HikariConfig config = new HikariConfig();
+		config.setJdbcUrl(url);
+		config.setUsername(user);
+		config.setPassword(password);
+		config.setMaximumPoolSize(3);
+		config.setConnectionTimeout(30000);
+		config.setValidationTimeout(5000);
+		return dataSource = new HikariDataSource(config);
 	}
 	
 //	public static DataSource initDataSource(String url, String user, String password) {

@@ -1,8 +1,9 @@
 package app.dash;
 
 import app.AppService;
-import app.SubApp;
 import app.AppView;
+import app.SubApp;
+import dao.DAO;
 import entity.Member;
 
 public class DashBoard extends SubApp {
@@ -10,7 +11,7 @@ public class DashBoard extends SubApp {
 	private DashBoardList dashBoardList = new DashBoardList(this);;
 	
 	public void save() {
-		AppService.getInstance().sql().insert("members", new Member());
+		DAO.sql.insert("members", new Member());
 	}
 	
 	public void openWrite() {

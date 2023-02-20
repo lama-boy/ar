@@ -37,6 +37,10 @@ public final class Gui {
     
 	private Gui() {}
 	
+	public static JLabel createIconLabel(String path, int width, int height) {
+		return new JLabel(new ImageIcon(getResizedImage(path, width, height)));
+	}
+	
 	public static JLabel createIconLabel(Image image, int width, int height) {
 		return new JLabel(new ImageIcon(getResizedImage(image, width, height)));
 	}
@@ -72,7 +76,7 @@ public final class Gui {
  
 	@SuppressWarnings("unchecked")
 	public static JTable createTable(List<?> dataList) {
-		if(dataList.get(0) == null) 
+		if(dataList == null || dataList.get(0) == null) 
 			return new JTable();
 		
 		if(dataList.get(0) instanceof List) {
@@ -118,16 +122,16 @@ public final class Gui {
 		return openCalendar(null, null);
 	}
 	
-	public static String openCalendar(Frame frame) {
-		return openCalendar(frame, null);
+	public static String openCalendar(Frame parent) {
+		return openCalendar(parent, null);
 	}
 	
 	public static String openCalendar(String string) {
 		return openCalendar(null, string);
 	}
 	
-	public static String openCalendar(Frame frame, String format) {
-		return new SimpleCalendar(frame, format).open();
+	public static String openCalendar(Frame parent, String format) {
+		return new SimpleCalendar(parent, format).open();
 	}
 	
 	public static boolean confirmDialog(JComponent parent, Object message, String title, int type) {
@@ -143,8 +147,8 @@ public final class Gui {
 	}
 	
 //-----------------------------------create Simple JFileChooser--------------------------------//
-	public static JFileChooser createFileChooser(String currentDirectory, String... exts) {
-		JFileChooser fileChooser = new JFileChooser(currentDirectory);
+	public static JFileChooser createFileChooser(File file, String... exts) {
+		JFileChooser fileChooser = new JFileChooser(file);
 		if(exts != null && exts.length > 0) {
 			FileNameExtensionFilter filter = new FileNameExtensionFilter("Files", exts);
 			fileChooser.setFileFilter(filter);
@@ -152,8 +156,12 @@ public final class Gui {
 		return fileChooser;
 	}
 	
-	public static File[] getFiles(Component parent, String currentDirectory, String... exts) {
-        JFileChooser fileChooser = createFileChooser(currentDirectory, exts);
+	public static JFileChooser createFileChooser(String... exts) {
+		return createFileChooser(new File(""), exts);
+	}
+	
+	public static File[] getFiles(Component parent, File current, String... exts) {
+        JFileChooser fileChooser = createFileChooser(exts);
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         fileChooser.setMultiSelectionEnabled(true);
         if (fileChooser.showOpenDialog(parent) == JFileChooser.APPROVE_OPTION) {
@@ -163,8 +171,8 @@ public final class Gui {
         }
     }
 	
-	public static File getFile(Component parent, String currentDirectory, String... exts) {
-        JFileChooser fileChooser = createFileChooser(currentDirectory, exts);
+	public static File getFile(Component parent, File current, String... exts) {
+        JFileChooser fileChooser = createFileChooser(current, exts);
         if (fileChooser.showOpenDialog(parent) == JFileChooser.APPROVE_OPTION) {
             return fileChooser.getSelectedFile();
         } else {
@@ -172,12 +180,12 @@ public final class Gui {
         }
     }
 	
-	public static File[] getFiles(String... exts) {
-		return getFiles(null, "", exts);
+	public static File[] getFiles(String exts) {
+		return getFiles(null, null, exts);
 	}
 	
-	public static File getFile(String... exts) {
-		return getFile(null, "", exts);
+	public static File getFile(String exts) {
+		return getFile(null, null, exts);
 	}
 //-------------------------------------------End JFileChooser----------------------------------//
 }	

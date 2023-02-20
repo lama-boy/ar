@@ -6,12 +6,11 @@ import javax.swing.ImageIcon;
 
 public abstract class SubApp implements Comparable<SubApp>{
 	private int index;
-	protected AppView subAppView;
 	
 	//--------------선택적 Override Methods -----------------
 	public String getTitle() {
 		//기본값은 클래스 이름입니다. 쉽게 알아볼수 있는 이름으로 Override 하기
-		return getClass().getSimpleName(); 
+		return getClass().getSimpleName();
 	}
 	
 	public String getImagePath() {

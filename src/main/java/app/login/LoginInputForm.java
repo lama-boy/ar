@@ -7,16 +7,22 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-import app.AppService;
 import app.AppView;
+import app.SubApp;
+import dao.DAO;
 import gui.panel.button.ButtonPanel;
 
 public class LoginInputForm extends AppView{
 	private LoginApp login;
 
-	public LoginInputForm(LoginApp login) {
-		this.login = login;
-		List<String> result = AppService.getInstance().sql().selectOne("select id, password from members where id = 'ydk'");
+	public LoginInputForm(SubApp parentApp) {
+		super("로그인인풋폼", parentApp);
+	}
+
+	public JPanel initRootPanel() {
+		rootPanel.removeAll();
+		List<String> result = DAO.sql.selectOne("select * from members where id='ydk'");
+
 		JPanel panel = new JPanel();
 
 		panel.add(new JLabel("Login ID"));
@@ -35,8 +41,9 @@ public class LoginInputForm extends AppView{
 
 		panel.add(buttonPanel);
 		rootPanel.add(panel);
+		return rootPanel;
 	}
-	
+
 	public boolean validate() {
 		return false;
 	}
