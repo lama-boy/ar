@@ -5,7 +5,6 @@ import java.util.function.Consumer;
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
-import javax.swing.JCheckBox;
 import javax.swing.JRadioButton;
 
 public class RadioButtonPanel extends AbstractButtonPanel{

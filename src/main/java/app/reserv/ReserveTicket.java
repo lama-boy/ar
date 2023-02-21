@@ -2,16 +2,14 @@ package app.reserv;
 
 import java.util.List;
 
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
+import app.AppView;
 import app.SubApp;
 import dao.DAO;
-import app.AppView;
-import gui.Gui;
 import gui.panel.button.ButtonPanel;
 
 public class ReserveTicket extends AppView {
@@ -24,7 +22,7 @@ public class ReserveTicket extends AppView {
 	}
 
 	@Override
-	public JPanel initRootPanel() {
+	public void initRootPanel() {
 		rootPanel.removeAll();
 		List<String> result = DAO.sql.selectOne("select * from members where id='ydk'");
 
@@ -43,8 +41,7 @@ public class ReserveTicket extends AppView {
 		ButtonPanel buttonPanel = new ButtonPanel();
 		buttonPanel.addButton("make",b->reserv.reserve(null));
 
-		panel.add(buttonPanel);
+		panel.add(buttonPanel.getPanel());
 		rootPanel.add(panel);
-		return rootPanel;
 	}
 }

@@ -19,7 +19,7 @@ public class LoginInputForm extends AppView{
 		super("로그인인풋폼", parentApp);
 	}
 
-	public JPanel initRootPanel() {
+	public void initRootPanel() {
 		rootPanel.removeAll();
 		List<String> result = DAO.sql.selectOne("select * from members where id='ydk'");
 
@@ -39,9 +39,8 @@ public class LoginInputForm extends AppView{
 		buttonPanel.addButton("Login",b->login.login());
 		buttonPanel.addButton("Join", b->login.join());
 
-		panel.add(buttonPanel);
+		panel.add(buttonPanel.getPanel());
 		rootPanel.add(panel);
-		return rootPanel;
 	}
 
 	public boolean validate() {

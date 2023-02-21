@@ -1,150 +1,141 @@
 package gui;
-import java.awt.AlphaComposite;
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.border.LineBorder;
 
 @SuppressWarnings("serial")
-public class WrapFrame extends JFrame{
-	private int x, y, width, height, dirX, dirY;
-	private WrapPanel wrapPanel;
-
-	public WrapFrame(int width, int height) {
+public class WrapFrame extends JFrame implements Runnable {
+	private float alpha = 0;
+	private float da = 0.07f;
+	private float maxAlpha = 0.5f;
+	private long waitMilliseconds= 150;
+	
+	public static final Font DEFAULT_FONT = new Font("맑은 고딕", Font.PLAIN, 20);
+	private JPanel panel = new JPanel(new BorderLayout());
+	
+	public WrapFrame(JComponent parent, JComponent comp) {
+		if(comp != null) 
+			panel.add(comp);
+		if(parent != null) {
+			setLocation(parent.getLocationOnScreen());
+			setSize(parent.getSize());
+		}
+	}
+	
+	public WrapFrame(JComponent parent) {
+		this(parent, null);
+	}
+	
+	{	
 		setUndecorated(true);
 		setAlwaysOnTop(true);
-		setBackground(new Color(0,0,0,0));
-		 
-		wrapPanel = new WrapPanel(width, height);
-		wrapPanel.addMouseListener(wrapPanel);
-		wrapPanel.addMouseMotionListener(wrapPanel);
-		addKeyListener(wrapPanel);
-		setContentPane(wrapPanel);
+		setOpacity(0f);
+		setContentPane(panel);
+	}
+	
+	public void setProperties(float alpha, float da, float maxAlpha, long waitMilliseconds) {
+		if(alpha >= 0) this.alpha = alpha;
+		if(da > 0) this.da = da;
+		if(maxAlpha > 0 && maxAlpha <= 1) this.maxAlpha = maxAlpha;
+		if(waitMilliseconds > 0) this.waitMilliseconds = waitMilliseconds;
+	}
+	
+	public void setPanelColor(Color color) {
+		panel.setBackground(color);
+	}
+	
+	public static void alert(JComponent... parents) {
+		alert(null, null, parents);
+	}
+	
+	public static void alert(String msg, JComponent... parents) {
+		alert(msg, null, parents);
+	}
+	
+	public static void alert(String msg, Font font, JComponent... parents) {
+		for(JComponent parent : parents) {
+			WrapFrame frame = new WrapFrame(parent);
+			if(msg != null) {
+				JLabel label = new JLabel(msg);
+				label.setHorizontalAlignment(JLabel.CENTER);
+				label.setForeground(Color.YELLOW);
+				if(font == null) 
+					font = WrapFrame.DEFAULT_FONT;
+				label.setFont(font);
+				frame.getContentPane().add(label);
+			}
+			frame.setPanelColor(Color.RED);
+			frame.setProperties(0, 0.08f, 0.5f, 170);
+			frame.start();	
+		}
+	}
+	
+	public static void mouseTooltip(JComponent parent, String text) {
+		parent.addMouseListener(new MouseAdapter() {
+			public void mouseEntered(MouseEvent e) {
+				WrapFrame frame = new WrapFrame(parent);
+				frame.setLocation(e.getLocationOnScreen().x, parent.getLocationOnScreen().y+ parent.getHeight());
+				frame.setProperties(0, 0.1f, 0.7f, 1000);
+				JPanel newPanel = new JPanel();
+				frame.setContentPane(newPanel);
+				JLabel label = new JLabel(text);
+				newPanel.add(label);
+				label.setHorizontalAlignment(JLabel.CENTER);
+				label.setFont(new Font("맑은 고딕", Font.ITALIC, 15));
+				label.setForeground(Color.BLACK);
+				newPanel.setBorder(new LineBorder(Color.DARK_GRAY, 1));
+				frame.pack();
+				frame.start();
+			}
+		});
+	}
+	
+	public static void tooltip(JComponent parent, String text) {
+		WrapFrame frame = new WrapFrame(parent);
+		frame.setProperties(0, 0.1f, 0.7f, 1000);
+		JLabel label = new JLabel(text);
+		label.setHorizontalAlignment(JLabel.CENTER);
+		JPanel panel = (JPanel) frame.getContentPane();
+		panel.setBackground(Color.DARK_GRAY);
+		label.setFont(DEFAULT_FONT);
+		label.setForeground(Color.WHITE);
+		panel.setBorder(new LineBorder(Color.YELLOW, 2));
+		frame.getContentPane().add(label);
+		frame.start();
+	}
+	
+	public void start() {
 		setVisible(true);
-		pack();
+		Thread thread = new Thread(this);
+		thread.start();
 	}
-	
-	public void setColor(Color color) {
-		wrapPanel.color = color;
-	}
-	
-	class WrapPanel extends JPanel implements MouseListener, MouseMotionListener, KeyListener{
-		private Color color = new Color(0, 0, 255, 108);
-		
-		WrapPanel(int width, int height) {
-			setPreferredSize(new Dimension(width, height));
+
+	public void run() {
+		while(true) {
+			try {
+				Thread.sleep(33);
+			alpha += da;
+			if(alpha > maxAlpha) {
+				alpha = maxAlpha - da;
+				da *= -1;
+				Thread.sleep(waitMilliseconds);
+			}else if(alpha < 0) {
+				break;
+			}
+			if(alpha >=0 && alpha <= 1) setOpacity(alpha);
+			} catch(InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
-		
-		public void paint(Graphics g) {
-			Graphics2D g2d = (Graphics2D) g;
-			g2d.setComposite(AlphaComposite.SrcOver.derive(0.5f));
-			g2d.setColor(color);
-			g2d.fillRect(0, 0, getWidth(), getHeight());
-		}
-		
-		@Override
-		public void mousePressed(MouseEvent e) {
-		    Point p = e.getPoint();
-		    dirX = 0; dirY = 0;
-		    x = getX();
-		    y = getY();
-		    width = getWidth();
-		    height = getHeight();
-		    
-			int t = 20; // resize() 범위 pixel
-		    if(p.x < t) dirX = -1; 
-		    if(p.y < t) dirY = -1;
-		    if(p.x > width - t) dirX = +1;
-		    if(p.y > height - t) dirY = +1;
-		    
-		    if(dirX != 0 || dirY !=0) { 
-		    	wrapPanel.setCursor(new Cursor(Cursor.MOVE_CURSOR));
-		    }
-	    }
-
-		public void resize(Point p) {
-			if(dirX == -1) { //왼쪽
-				width = width + x - p.x;
-				x = p.x;
-			}
-			if(dirY == -1) { //위쪽
-				height = height + y - p.y;
-				y = p.y;
-			}
-			if(dirX == +1) { //오른쪽
-				width = p.x - x;
-			}
-			if(dirY == +1) { //아래쪽
-				height = p.y - y;
-			}
-			
-			//크기가 0이 된경우 방향 전환
-			if(width < 0) { 
-				dirX *= -1;
-			}
-			if(height < 0) { 
-				dirY *= -1;
-			}
-			setBounds(x, y, width, height);
-		}
-
-		public void mouseDragged(MouseEvent e) {
-			resize(e.getLocationOnScreen());
-		}
-
-
-		@Override
-		public void mouseReleased(MouseEvent e) {
-			wrapPanel.setCursor(Cursor.getDefaultCursor());
-		}
-		
-		@Override
-		public void keyTyped(KeyEvent e) {}
-
-		@Override
-		public void keyPressed(KeyEvent e) {
-			Rectangle r = getBounds();
-			int key = e.getKeyCode();
-			switch (key) {
-				case KeyEvent.VK_NUMPAD4: r.x--; r.width++; break;
-				case KeyEvent.VK_NUMPAD6: r.width++; break;
-				case KeyEvent.VK_NUMPAD8: r.y--; r.height++; break;
-				case KeyEvent.VK_NUMPAD2: r.height++; break;
-				case KeyEvent.VK_LEFT: r.x++; r.width--; break;
-				case KeyEvent.VK_RIGHT: r.width--; break;
-				case KeyEvent.VK_UP: r.y++; r.height--; break;
-				case KeyEvent.VK_DOWN: r.height--; break;
-			}
-			if(width > 0 && height > 0) setBounds(r);
-			System.out.println(r);
-		}
-
-		@Override
-		public void keyReleased(KeyEvent e) {}
-
-		@Override
-		public void mouseMoved(MouseEvent e) {}
-		
-		@Override
-		public void mouseClicked(MouseEvent e) {}
-
-		@Override
-		public void mouseEntered(MouseEvent e) {}
-
-		@Override
-		public void mouseExited(MouseEvent e) {}
+		dispose();
 	}
 }
-
-

@@ -9,9 +9,10 @@ import java.util.stream.Collectors;
 
 import javax.swing.AbstractButton;
 import javax.swing.ImageIcon;
-import javax.swing.JPanel;
 
-public abstract class AbstractButtonPanel extends JPanel{
+import gui.panel.CustomPanel;
+
+public abstract class AbstractButtonPanel extends CustomPanel{
 	private List<AbstractButton> buttonList = new Vector<>();
 	
 	public abstract void addButton(String name, Consumer<?> c);
@@ -34,7 +35,7 @@ public abstract class AbstractButtonPanel extends JPanel{
 		if (c != null) {
 			button.addActionListener(e -> c.accept(null));
 		}
-		add(button);
+		rootPanel.add(button);
 	}
 
 	public List<String> getValues() {

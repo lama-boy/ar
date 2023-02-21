@@ -7,7 +7,6 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-import app.AppService;
 import app.AppView;
 import dao.DAO;
 import gui.panel.button.ButtonPanel;
@@ -25,7 +24,7 @@ public class DashBoardWrite extends AppView{
 	}
 
 	@Override
-	public JPanel initRootPanel() {
+	public void initRootPanel() {
 		List<String> result = DAO.sql.selectOne("select * from members where id='ydk'");
 		JPanel panel = new JPanel();
 
@@ -43,8 +42,7 @@ public class DashBoardWrite extends AppView{
 		buttonPanel.addButton("SAVE",b->dash.save());
 		buttonPanel.addButton("OPEN LIST", b->dash.openList());
 
-		panel.add(buttonPanel);
+		panel.add(buttonPanel.getPanel());
 		rootPanel.add(panel);	
-		return rootPanel;
 	}
 }

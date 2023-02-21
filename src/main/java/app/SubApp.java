@@ -2,8 +2,6 @@ package app;
 
 import java.time.LocalDateTime;
 
-import javax.swing.ImageIcon;
-
 public abstract class SubApp implements Comparable<SubApp>{
 	private int index;
 	

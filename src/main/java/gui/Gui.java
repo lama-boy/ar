@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -7,12 +8,15 @@ import java.awt.Frame;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.Window;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.function.Consumer;
 
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -22,6 +26,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.UIManager;
+import javax.swing.border.Border;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import gui.table.DataListTable;
@@ -66,6 +71,16 @@ public final class Gui {
 		return image.getScaledInstance(width, height, Image.SCALE_SMOOTH);
 	}
 	
+	public static void addBorderOnEnterMouse(JComponent comp, Consumer<?> action, Color color, int t) {
+		Border empty = BorderFactory.createEmptyBorder(t,t,t,t);
+		Border line = BorderFactory.createLineBorder(color, t);
+		comp.setBorder(empty);
+		comp.addMouseListener(new MouseAdapter() {
+			public void mouseReleased(MouseEvent e) { action.accept(null); }
+			public void mouseEntered(MouseEvent e) { comp.setBorder(line); }
+			public void mouseExited(MouseEvent e) { comp.setBorder(empty); }
+		});
+	}
 	public static void setLookAndFeel(String className) {
         try {
             UIManager.setLookAndFeel(className);

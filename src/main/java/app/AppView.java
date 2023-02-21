@@ -13,11 +13,7 @@ public abstract class AppView {
 	private String title;
 	private ImageIcon icon;
 	
-//	private AppView() {
-//		this(null, null);
-//	}
-	
-	public abstract JPanel initRootPanel();
+	public abstract void initRootPanel();
 	
 	public AppView() {
 		this(null, null);

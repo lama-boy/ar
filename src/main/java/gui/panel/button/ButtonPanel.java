@@ -32,4 +32,6 @@ public class ButtonPanel extends AbstractButtonPanel{
 		button.setName(name);
 		settingButton(button, c);
 	}
+
+
 }

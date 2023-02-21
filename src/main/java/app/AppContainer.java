@@ -11,8 +11,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -27,13 +25,12 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.border.Border;
 
 import app.login.LoginApp;
 import gui.Gui;
 import gui.panel.button.ButtonPanel;
 import gui.panel.layout.BorderLayoutPanel;
-import gui.wiget.AnalogClock;
+import gui.wiget.ZonedClock;
 
 public class AppContainer {
 	private BorderLayoutPanel rootPanel = new BorderLayoutPanel();
@@ -55,7 +52,6 @@ public class AppContainer {
 	private Properties style = new Properties();
 	private int width, height;
 	private Color contBg, contBorder, topBotColor, lineColor;
-	private Border iconLineBorder, iconEmptyBorder = BorderFactory.createEmptyBorder(2,2,2,2);
 	private String timeForamt = "YYYY-MM-dd EEE HH:mm:ss";
 	private Dimension botBothSide = new Dimension(200,40);
 	private ImageIcon contIcon = new ImageIcon(IMG_PATH+"conticon.png");
@@ -73,7 +69,6 @@ public class AppContainer {
 	    contBorder = Color.decode(style.getProperty("contBorder"+s, "#7b630f"));
 		topBotColor = Color.decode(style.getProperty("topBotColor"+s, "#001130"));
 	    lineColor = Color.decode(style.getProperty("lineColor"+s, "#FF0000"));
-	    iconLineBorder = BorderFactory.createLineBorder(lineColor, 2);
 	    width = Integer.parseInt(style.getProperty("width", "700"));
 	    height = Integer.parseInt(style.getProperty("height", "700"));
 	    
@@ -85,7 +80,7 @@ public class AppContainer {
     	setStyle();
     	frame.dispose();
     	viewList.clear();
-    	rootPanel.panel().removeAll();
+    	rootPanel.getPanel().removeAll();
     	cardPanel.removeAll();
     	
     	cardPanel.setPreferredSize(new Dimension(width, height-80));
@@ -138,7 +133,7 @@ public class AppContainer {
 
 		frame = new JFrame("항공권 예약 시스템");
 		frame.setIconImage(contIcon.getImage());
-		frame.setContentPane(rootPanel.panel());
+		frame.setContentPane(rootPanel.getPanel());
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.pack();
 		frame.setVisible(true);
@@ -204,14 +199,9 @@ public class AppContainer {
 		
 		JLabel iconLabel = Gui.createIconLabel(IMG_PATH+subApp.getClass().getSimpleName()+".PNG", 100, 100);
 		iconPanel.setCursor(new Cursor(Cursor.HAND_CURSOR));
-		iconPanel.setBorder(iconEmptyBorder);
 		iconPanel.add(iconLabel, BorderLayout.CENTER);
 		iconPanel.add(titleLabel, BorderLayout.SOUTH);
-		iconPanel.addMouseListener(new MouseAdapter() {
-			public void mouseReleased(MouseEvent e) { addView(subApp.requestView()); }
-			public void mouseEntered(MouseEvent e) { iconPanel.setBorder(iconLineBorder); }
-			public void mouseExited(MouseEvent e) { iconPanel.setBorder(iconEmptyBorder); }
-		});
+		Gui.addBorderOnEnterMouse(iconPanel, b->addView(subApp.requestView()), lineColor, 2);
 	}
 	
 	public void move(int d) {
@@ -232,7 +222,6 @@ public class AppContainer {
 			else if(cardIndex >= viewList.size()) cardIndex = 0;
 			attachView(viewList.get(cardIndex));
 			sysout(cardIndex);
-
 		}
 	}
 	
@@ -272,8 +261,15 @@ public class AppContainer {
 //			AppService.getInstance().updateSubAppIcons();
 		
 		if(i==4) {
-			addView(new AnalogClock());
-		}
+			addView(
+				new AppView() {
+					@Override
+					public void initRootPanel() {
+						rootPanel.add(new ZonedClock().getPanel());
+						// TODO Auto-generated method stub
+					}
+				});
+			}
 		sysout(i);
 		
 		if(i == 5) {

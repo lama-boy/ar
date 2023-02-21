@@ -27,7 +27,7 @@ public class NaviPanel{
 		rbPanel.addButton("2click", c->print(2));
 		rbPanel.setSelected(true, "2click");
 		
-		content.add(rbPanel);
+		content.add(rbPanel.getPanel());
 		
 		CheckBoxPanel cbpanel = new CheckBoxPanel();
 		for (int i = 0; i < 3; i++) {
@@ -41,7 +41,7 @@ public class NaviPanel{
 //		cbpanel.setSelected(2);
 		cbpanel.setSelected(0);
 		
-		content.add(cbpanel);
+		content.add(cbpanel.getPanel());
 		
 		Gui.createFrame(content);
 		System.out.println(rbPanel.getValue());

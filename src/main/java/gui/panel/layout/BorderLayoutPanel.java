@@ -8,6 +8,8 @@ import java.awt.Dimension;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
+import gui.panel.CustomPanel;
+
 public class BorderLayoutPanel extends CustomPanel{
 	{ rootPanel.setLayout(new BorderLayout()); }
 	
