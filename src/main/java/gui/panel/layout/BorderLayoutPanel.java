@@ -4,9 +4,11 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import gui.panel.CustomPanel;
 
@@ -60,14 +62,24 @@ public class BorderLayoutPanel extends CustomPanel{
 		}
 	}
 	
-	public JPanel newPanel(int width, int height, String dir) {
-		return newPanel(new Dimension(width, height), dir);
+	public JPanel newPanel(int width, int height, String direction) {
+		return newPanel(new Dimension(width, height), direction, 0);
 	}
 	
-	public JPanel newPanel(Dimension dim, String dir) {
-		JPanel panel = new JPanel();
-		panel.setPreferredSize(dim);
-		rootPanel.add(panel, dir);
+	public JPanel newPanel(Dimension dim, String direction, int alignment) {
+		JPanel panel = new JPanel(new FlowLayout(alignment));
+		if(dim != null) panel.setPreferredSize(dim);
+		rootPanel.add(panel, direction);
 		return panel;
+	}
+	
+	public JScrollPane newScroll(JComponent comp, String direction) {
+		JScrollPane scrollPane = new JScrollPane(comp);
+		rootPanel.add(scrollPane, direction);
+		return scrollPane;
+	}
+	
+	public JPanel newPanel(String direction) {
+		return newPanel(null, direction, 0);
 	}
 }

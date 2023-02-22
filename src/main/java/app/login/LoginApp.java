@@ -1,37 +1,25 @@
 package app.login;
 
-import static test.Debug.sysout;
-
 import app.AppService;
 import app.AppView;
 import app.SubApp;
-import entity.Member;
 
-public class LoginApp extends SubApp {
-	private LoginInputForm loginInputForm = new LoginInputForm(this);
+public class LoginApp extends SubApp{
+	private AirLineMain airLineMain = new AirLineMain(this); 
+	private AirLineSignUp airLineSignUp = new AirLineSignUp(this); 
 	
-	public LoginApp() {
-		initComponent();
+	public void openSignUp() {
+		AppService.getInstance().closeView(airLineSignUp);
+		AppService.getInstance().openView(airLineSignUp);
 	}
 	
-	private void initComponent() {
-	}
-
-	public void join() {
-		sysout("join");
-	}
-
-	public void login() {
-		sysout("login");
-		AppService.getInstance().setMember(new Member());
+	public void openMain() {
+		AppService.getInstance().closeView(airLineSignUp);
+		AppService.getInstance().openView(airLineMain);
 	}
 	
 	@Override
 	public AppView requestView() {
-		return loginInputForm;
-	}
-	
-	public static void main(String[] args) {
-		LoginApp loginApp = new LoginApp();
+		return airLineMain;
 	}
 }

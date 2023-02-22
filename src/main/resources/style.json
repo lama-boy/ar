@@ -1,0 +1,16 @@
+{
+	"width": 750,
+	"height": 700,
+	"style": [
+		{
+	        "contBg": "#FAEECB",
+	        "contBorder": "#7B630F",
+	        "topBotColor": "#3e270c"
+	    },
+	    {
+	        "contBg": "#E0E0E0",
+	        "contBorder": "#233353",
+	        "topBotColor": "#192939"
+	    }
+    ]
+}

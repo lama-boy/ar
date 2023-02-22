@@ -2,7 +2,9 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -12,45 +14,93 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
-@SuppressWarnings("serial")
-public class WrapFrame extends JFrame implements Runnable {
+public class WrapFrame implements Runnable {
+	private JPanel rootPanel = new JPanel(new BorderLayout());
+	private JFrame rootFrame = new JFrame();
 	private float alpha = 0;
-	private float da = 0.07f;
+	private float changeRate = 0.07f;
 	private float maxAlpha = 0.5f;
 	private long waitMilliseconds= 150;
+	private boolean dispose = true;
+	private JComponent parent;
+	
+	public void setDispose(boolean dispose) {
+		this.dispose = dispose;
+	}
 	
 	public static final Font DEFAULT_FONT = new Font("맑은 고딕", Font.PLAIN, 20);
-	private JPanel panel = new JPanel(new BorderLayout());
 	
 	public WrapFrame(JComponent parent, JComponent comp) {
 		if(comp != null) 
-			panel.add(comp);
-		if(parent != null) {
-			setLocation(parent.getLocationOnScreen());
-			setSize(parent.getSize());
-		}
+			rootPanel.add(comp);
+		this.parent = parent;
 	}
 	
 	public WrapFrame(JComponent parent) {
 		this(parent, null);
 	}
 	
-	{	
-		setUndecorated(true);
-		setAlwaysOnTop(true);
-		setOpacity(0f);
-		setContentPane(panel);
+	{
+		rootFrame.setUndecorated(true);
+		rootFrame.setAlwaysOnTop(true);
+		rootFrame.setOpacity(0f);
+		rootFrame.setContentPane(rootPanel);
 	}
 	
-	public void setProperties(float alpha, float da, float maxAlpha, long waitMilliseconds) {
+	public void setProperties(float alpha, float changeRate, float maxAlpha, long waitMilliseconds) {
 		if(alpha >= 0) this.alpha = alpha;
-		if(da > 0) this.da = da;
+		if(changeRate > 0) this.changeRate = changeRate;
 		if(maxAlpha > 0 && maxAlpha <= 1) this.maxAlpha = maxAlpha;
 		if(waitMilliseconds > 0) this.waitMilliseconds = waitMilliseconds;
 	}
 	
 	public void setPanelColor(Color color) {
-		panel.setBackground(color);
+		rootPanel.setBackground(color);
+	}
+	
+	public JFrame getFrame() {
+		return rootFrame; 
+	}
+	
+	public void start() {
+		start(0, 0, 0, 0);
+	}
+	
+	public void start(int dx, int dy, int sx, int sy) {
+		Point p = parent.getLocationOnScreen();
+		if(dx != 0) p.x = dx;
+		if(dx != 0) p.y = dy;
+		rootFrame.setLocation(p);
+		Dimension dimension = parent.getSize();
+		if(sx != 0) dimension.width = sx;
+		if(sy != 0) dimension.height = sy;
+		rootFrame.setSize(dimension);
+		rootFrame.setVisible(true);
+		Thread thread = new Thread(this);
+		thread.start();
+	}
+
+	public void run() {
+		while(true) {
+			try {
+				Thread.sleep(33);
+			alpha += changeRate;
+			if(alpha > maxAlpha) {
+				alpha = maxAlpha;
+				changeRate *= -1;
+				Thread.sleep(waitMilliseconds);
+			}else if(alpha < 0) {
+				break;
+			}
+			if(alpha >=0 && alpha <= 1) rootFrame.setOpacity(alpha);
+			} catch(InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		if(dispose)
+			rootFrame.dispose();
+		else
+			rootFrame.setVisible(false);
 	}
 	
 	public static void alert(JComponent... parents) {
@@ -69,73 +119,83 @@ public class WrapFrame extends JFrame implements Runnable {
 				label.setHorizontalAlignment(JLabel.CENTER);
 				label.setForeground(Color.YELLOW);
 				if(font == null) 
-					font = WrapFrame.DEFAULT_FONT;
+					font = Gui.font(40);
 				label.setFont(font);
-				frame.getContentPane().add(label);
+				frame.getFrame().getContentPane().add(label);
 			}
 			frame.setPanelColor(Color.RED);
-			frame.setProperties(0, 0.08f, 0.5f, 170);
+			frame.setProperties(0, 0.12f, 0.7f, 170);
 			frame.start();	
 		}
 	}
 	
 	public static void mouseTooltip(JComponent parent, String text) {
+		mouseTooltip(parent, text, -1, -1, null);
+	}
+	
+	public static void mouseTooltip(JComponent parent, String text, int width, int height, Font font) {
 		parent.addMouseListener(new MouseAdapter() {
-			public void mouseEntered(MouseEvent e) {
-				WrapFrame frame = new WrapFrame(parent);
-				frame.setLocation(e.getLocationOnScreen().x, parent.getLocationOnScreen().y+ parent.getHeight());
-				frame.setProperties(0, 0.1f, 0.7f, 1000);
-				JPanel newPanel = new JPanel();
-				frame.setContentPane(newPanel);
+			WrapFrame frame = new WrapFrame(parent);
+			{
+				JPanel panel = new JPanel();
+				frame.getFrame().setContentPane(panel);
 				JLabel label = new JLabel(text);
-				newPanel.add(label);
+				panel.add(label);
 				label.setHorizontalAlignment(JLabel.CENTER);
-				label.setFont(new Font("맑은 고딕", Font.ITALIC, 15));
+				label.setFont(font == null ? Gui.font(23) : font);
 				label.setForeground(Color.BLACK);
-				newPanel.setBorder(new LineBorder(Color.DARK_GRAY, 1));
-				frame.pack();
-				frame.start();
+				panel.setBorder(new LineBorder(Color.DARK_GRAY, 1));
+				frame.getFrame().pack();
+			}
+			public void mouseEntered(MouseEvent e) {
+				if(frame.getFrame().isVisible()) return;
+				frame.setProperties(0, 0.1f, 1f, 1500);
+				frame.start(e.getLocationOnScreen().x, parent.getLocationOnScreen().y+ parent.getHeight(), width, height);
 			}
 		});
 	}
 	
-	public static void tooltip(JComponent parent, String text) {
+	public static void greenAlert(JComponent parent) {
+		greenAlert(parent, null, null);
+	}
+	
+	public static void greenAlert(JComponent parent, String msg) {
+		greenAlert(parent, msg, null);
+	}
+	
+	public static void greenAlert(JComponent parent, String msg, Font font, int inWidth, int inHeight) {
 		WrapFrame frame = new WrapFrame(parent);
-		frame.setProperties(0, 0.1f, 0.7f, 1000);
-		JLabel label = new JLabel(text);
-		label.setHorizontalAlignment(JLabel.CENTER);
-		JPanel panel = (JPanel) frame.getContentPane();
-		panel.setBackground(Color.DARK_GRAY);
-		label.setFont(DEFAULT_FONT);
-		label.setForeground(Color.WHITE);
-		panel.setBorder(new LineBorder(Color.YELLOW, 2));
-		frame.getContentPane().add(label);
+		Color outColor = new Color(240, 255, 240);
+		frame.getFrame().getContentPane().setLayout(null);
+		JPanel inPanel = new JPanel();
+		inPanel.setBackground(new Color(201, 255, 210));
+		Dimension size = parent.getSize();
+		if(inWidth == -1) inWidth = 500;
+		if(inHeight == -1) inHeight = 70;
+		JLabel iconLabel = Gui.createIconLabel(Gui.IMG_PATH+"success.png");
+		if(size.width < 50 || size.height < 50)
+			iconLabel.setIcon(Gui.getResizedIcon(Gui.IMG_PATH+"success.png", Math.min(size.width, size.height), Math.min(size.width, size.height)));
+		inPanel.add(iconLabel);
+		if(msg != null && !msg.isEmpty()) {
+			inPanel.setBorder(new LineBorder(Color.GREEN, 3));
+			JLabel label = new JLabel(msg);
+			label.setHorizontalAlignment(JLabel.CENTER);
+			label.setForeground(new Color(0, 123, 0));
+			if(font == null) font = Gui.font(40);
+			label.setFont(font);
+			inPanel.add(label);
+		} else {
+			inWidth = 70;
+			inPanel.setBackground(outColor);
+		}
+		inPanel.setBounds(size.width/2-inWidth/2, size.height/2 - (inHeight/2) - 10 , inWidth, inHeight);
+		frame.getFrame().getContentPane().add(inPanel, BorderLayout.CENTER);
+		frame.setPanelColor(outColor);
+		frame.setProperties(0, 0.12f, 0.8f, 230);
 		frame.start();
 	}
 	
-	public void start() {
-		setVisible(true);
-		Thread thread = new Thread(this);
-		thread.start();
-	}
-
-	public void run() {
-		while(true) {
-			try {
-				Thread.sleep(33);
-			alpha += da;
-			if(alpha > maxAlpha) {
-				alpha = maxAlpha - da;
-				da *= -1;
-				Thread.sleep(waitMilliseconds);
-			}else if(alpha < 0) {
-				break;
-			}
-			if(alpha >=0 && alpha <= 1) setOpacity(alpha);
-			} catch(InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-		dispose();
+	public static void greenAlert(JComponent parent, String msg, Font font) {
+		greenAlert(parent, msg, font, -1, -1);
 	}
 }

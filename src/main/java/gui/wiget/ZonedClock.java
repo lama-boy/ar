@@ -1,6 +1,7 @@
 package gui.wiget;
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -25,8 +26,10 @@ public class ZonedClock {
 	
 	private ZonedDateTime zonedTime;
 	
+	private JPanel timePanel = new JPanel();
+	
 	private LocalDateTime time = LocalDateTime.now();
-	private int size = 300;
+	private int size = 300, size2 = 30;
 	private int r, length;
 	
 	private int hour = 0;
@@ -43,29 +46,48 @@ public class ZonedClock {
 
 	private String format = "HH:mm:ss";
 	
+	public void setFontColor(Font font, Color fg, Color bgColor) {
+		timeLabel.setFont(font);
+		timeLabel.setForeground(fg);
+		timePanel.setBackground(bgColor);
+		size2 = (int) (font.getSize() * 1.8);
+		timePanel.setPreferredSize(new Dimension(size, size2));
+	}
+	
 	public ZonedClock() {
-		this(200,null);
+		this(200,null, 0);
 	}
 	
 	public ZonedClock(int size) {
-		this(size, null);
+		this(size, null, 0);
 	}
 	
-	public ZonedClock(int size, String zoneId) {
+	public ZonedClock(int size, String zoneId, int remove) {
 		if(zoneId == null) zoneId = "JST";
 		this.size = size;
-		initRootPanel();
+		initRootPanel(remove);
 		setZone(zoneId);
 		setTime(time);
 	}
 
 	public void initRootPanel() {
+		initRootPanel(0);
+	}
+	
+	public void initRootPanel(int remove) {
 		rootPanel = new BorderLayoutPanel();
-		analogClock = new AnalogClock(); 
-		rootPanel.addCenter(analogClock);
-		rootPanel.newPanel(size, 27, BorderLayout.SOUTH).add(timeLabel);
-		rootPanel.setSize(size, size + 27);
-		analogClock.setPreferredSize(new Dimension(size, size));
+		
+		if(remove != 1) {
+			analogClock = new AnalogClock(); 
+			rootPanel.addCenter(analogClock);
+		}
+		if(remove != 2) {
+			timePanel.setPreferredSize(new Dimension(size, size2));
+			rootPanel.addSouth(timePanel);
+			timePanel.add(timeLabel);
+		}
+		rootPanel.setSize(size, remove == 1 ? size2 : remove == 2 ? size : size + size2);
+		
 		font = new Font(Font.SANS_SERIF,Font.PLAIN, Math.max(size / 20, 7));
 		r = size / 2;
 		length = size / 3 + 5;
@@ -135,8 +157,13 @@ public class ZonedClock {
 
 	public void setTime(LocalDateTime time) {
 		this.time = time;
-		timeLabel.setText(zoneId + " "+ zonedTime.format(DateTimeFormatter.ofPattern(format)));
-		analogClock.repaint();
+		if(timeLabel != null) {
+			ZoneId timeZone = ZoneId.of(zoneId);
+			zonedTime = ZonedDateTime.of(time, timeZone);
+		}
+			timeLabel.setText(zoneId + " "+ zonedTime.format(DateTimeFormatter.ofPattern(format)));
+		if(analogClock != null)
+			analogClock.repaint();
 	}
 	
 	public void setFormat(String format) {
@@ -152,9 +179,6 @@ public class ZonedClock {
 			zoneId = ZoneId.SHORT_IDS.get(zoneId);
 		}
 		this.zoneId = zoneId;
-		LocalDateTime localDateTime = LocalDateTime.now();
-		ZoneId timeZone = ZoneId.of(zoneId);
-		zonedTime = ZonedDateTime.of(localDateTime, timeZone);
 	}
 
 	public String getZoneId() {

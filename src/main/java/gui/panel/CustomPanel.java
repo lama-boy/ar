@@ -1,5 +1,6 @@
 package gui.panel;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.LayoutManager;
 
@@ -32,5 +33,10 @@ public class CustomPanel {
 	
 	public JPanel getPanel() {
 		return rootPanel;
+	}
+	
+	public CustomPanel setBackground(Color bgColor) {
+		rootPanel.setBackground(bgColor);
+		return this;
 	}
 }

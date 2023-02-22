@@ -224,6 +224,23 @@ public class SimpleCalendar {
 			if(nextMonth == button) updateCalendar(date.plusMonths(1));
 		}
 	}
+	
+	public static String getDate() {
+		return getDate(null, null);
+	}
+	
+	public static String getDate(Frame parent) {
+		return getDate(parent, null);
+	}
+	
+	public static String getDate(String string) {
+		return getDate(null, string);
+	}
+	
+	public static String getDate(Frame parent, String format) {
+		return new SimpleCalendar(parent, format).open();
+	}
+	
 	public static void main(String[] args) {
 		Gui.setLookAndFeel(Gui.NIMBUS);
 		String str = new SimpleCalendar().open();

@@ -9,7 +9,7 @@ import java.util.Properties;
 import app.ArApplication;
 import dao.DAO;
 import dao.SqlUtil;
-import entity.Member;
+import entity.MemberDTO;
 import gui.Gui;
 
 public class Test {
@@ -23,7 +23,7 @@ public class Test {
 		}
 //		JdbcTemplate t = new JdbcTemplate(DAO.getDataSource());
 		SqlUtil s = new SqlUtil(DAO.getDataSource());
-		Member member = new Member();
+		MemberDTO member = new MemberDTO();
 		member.setId("123");
 		member.setName("aa123");
 		s.insert("members", member);

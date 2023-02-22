@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import javax.sql.DataSource;
 
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -61,10 +62,51 @@ public class SqlUtil {
 		BeanPropertySqlParameterSource bpsps = new BeanPropertySqlParameterSource(rowData);
 	    return new SimpleJdbcInsert(jdbcTemplate).withTableName(tableName).execute(bpsps);
 	}
-	
+
+	/**
+	 * sql.insert("TableName", VO, "id", "board_seq") <BR>
+	 * 시퀀스 증가 SimpleJdbcInsert.executeAndReturnKey 를 하려는데 오류가 난다. 임시로 사용
+	 */
+	public int insert(String tableName, Object rowData, String seqColumn, String seqName) {
+		String query = "INSERT INTO " +tableName+ "(";
+	    String columnNames = "";
+	    String values = "";
+	    
+	    //BeanProperty (getter) 의 정보를 읽는다
+	    BeanPropertySqlParameterSource bpsps = new BeanPropertySqlParameterSource(rowData);
+	    String[] propertyNames = bpsps.getReadablePropertyNames();
+	   
+	    //JdbcTemplate(query,args,argType) 값과 타입을 배열로 만든다
+	    ArrayList<Object> args = new ArrayList<>();
+	    ArrayList<Integer> argTypes = new ArrayList<>();
+	    for (String property : propertyNames) {
+	    	if(!property.equals("class")) {
+	    		columnNames += property + ",";
+	    		if(seqColumn.equals(property)) {
+	    			values += seqName + ".NEXTVAL,";
+	    		}else {
+	    			args.add(bpsps.getValue(property));
+		    		argTypes.add(bpsps.getSqlType(property));
+	    			values += "?,";
+	    		}
+	    	}
+		}
+	    
+	    // 마지막에 붙은 ,을 제거
+	    columnNames = columnNames.substring(0, columnNames.length() - 1);
+	    values = values.substring(0, values.length() - 1);
+	    query += columnNames + ") VALUES(" + values + ")";
+	    int result = 0;
+		try{
+			result = jdbcTemplate.update(query, args.toArray(), argTypes.stream().mapToInt(i -> i).toArray());
+		} catch (DuplicateKeyException e) {
+			return -1;
+		}
+		return result;
+	}
+
 	/**
 	 * @param excludes 업데이트에서 제외할 칼럼 명을 입력하세요 
-	 * 
 	 * ++primaryKey는 제외됩니다++
 	 */
 	public int update(String tableName, Object rowData, String primaryKey, String... excludes) {
@@ -111,4 +153,28 @@ public class SqlUtil {
 	public JdbcTemplate getJdbcTemplate() {
 		return jdbcTemplate;
 	}
+	
+}
+class Example {
+//	private JdbcTemplate jdbcTemplate;
+//	
+//	public Example(JdbcTemplate jdbcTemplate) {
+//		this.jdbcTemplate = jdbcTemplate;
+//	}
+	
+//	public void insertData(String name, int age) {
+//		SimpleJdbcInsert insert = new SimpleJdbcInsert(jdbcTemplate)
+//				.withTableName("my_table")
+//				.usingGeneratedKeyColumns("id");
+//		
+//		Map<String, Object> data = new HashMap<>();
+//		data.put("id", 3);
+//		data.put("name", name);
+//		data.put("age", age);
+//		
+//		Number id = insert.executeAndReturnKey(data);
+//		System.out.println("Inserted row with ID: " + id);
+//	}
+	
+	
 }

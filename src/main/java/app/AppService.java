@@ -4,13 +4,13 @@ package app;
 import java.util.List;
 import java.util.Vector;
 
-import entity.Member;
+import entity.MemberDTO;
 
 public class AppService {
 	private List<SubApp> appList = new Vector<>();
 	private AppContainer appContainer = new AppContainer();
 	private static AppService appService;
-	private Member member = new Member();
+	private MemberDTO member = new MemberDTO();
 	
 	public static AppService getInstance() {
 		return appService == null ? appService = new AppService() : appService;
@@ -34,9 +34,12 @@ public class AppService {
 		appContainer.addView(appView);
 	}
 	
-	public boolean closeView(AppView appView) {
+	public void closeView(AppView appView) {
 		appContainer.removeView(appView);
-		return true;
+	}
+	
+	public void closeViews(AppView... appViews) {
+		for(AppView view : appViews) closeView(view);
 	}
 	
 	public SubApp getSubApp(Class<? extends SubApp> subAppClass) {
@@ -57,15 +60,17 @@ public class AppService {
 		return appContainer;
 	}
 	
-	public void setMember(Member member) {
+	public void setMemberDTO(MemberDTO member) {
 		this.member = member;
 	}
-	public Member getMember() {
+	public MemberDTO getMember() {
 		return member;
 	}
 	
 	public void start() {
 		appContainer.initComponent();
+		appContainer.setStyle(null); //null 을 넣어서 style.property 를 읽게 만든다
+		appContainer.showFrame();
 		update();
 	}
 	

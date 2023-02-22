@@ -1,32 +1,44 @@
 package app.reserv;
 
+import java.awt.Color;
+import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+
+import com.toedter.calendar.JDateChooser;
+
 import app.AppView;
 import app.SubApp;
-import gui.Gui;
+import dao.DAO;
 
-public class Reservation extends SubApp {
-	private ReserveTicket reserveTicket;
+public class Reservation extends SubApp{
+	private ReservView reservView = new ReservView(this);
 	
 	public Reservation() {
-		reserveTicket = new ReserveTicket(this);
-		reserveTicket.initRootPanel();
+		
 	}
 	
 	@Override
 	public AppView requestView() {
-		return reserveTicket;
-	}
-
-	public Object reserve(Object object) {
-		return null;
+		return reservView;
 	}
 	
-	public boolean cancel() {
-		return false;
+	public void reservTicket(Object object) {
+		DAO.sql.insert("reserv", object);
 	}
 	
-	public static void main(String[] args) {
-		Reservation r = new Reservation();
-		Gui.createFrame(r.requestView().getPanel());
+	public void cancelTicket(Object object) {
+		DAO.sql.update("reserv", object, "ticketId");
 	}
 }

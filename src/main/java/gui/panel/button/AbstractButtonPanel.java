@@ -1,6 +1,7 @@
 package gui.panel.button;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.util.List;
 import java.util.Vector;
@@ -15,6 +16,10 @@ import gui.panel.CustomPanel;
 public abstract class AbstractButtonPanel extends CustomPanel{
 	private List<AbstractButton> buttonList = new Vector<>();
 	
+	private Dimension buttonSize;
+	
+	private Color bgColor, fgColor;
+	
 	public abstract void addButton(String name, Consumer<?> c);
 	
 	public abstract void addButton(String name, ImageIcon icon, Consumer<?> c);
@@ -28,13 +33,32 @@ public abstract class AbstractButtonPanel extends CustomPanel{
 	public List<AbstractButton> getButtonList() {
 		return buttonList;
 	}
+	
+	public void setButtonSize(int width, int height) {
+		buttonSize = new Dimension(width, height);
+	}
+	
+	public void setColor(Color bgColor, Color fgColor) {
+		this.bgColor = bgColor;
+		this.fgColor = fgColor;
+	}
+	
+	public void setProperty(int width, int height, Color bgColor, Color fgColor) {
+		setButtonSize(width, height);
+		setColor(bgColor, fgColor);
+	}
 
 	protected void settingButton(AbstractButton button, Consumer<?> c) {
 		buttonList.add(button);
 		button.setName(button.getText());
-		if (c != null) {
+		if (c != null) 
 			button.addActionListener(e -> c.accept(null));
-		}
+		if(buttonSize != null)
+			button.setPreferredSize(buttonSize);
+		if(bgColor != null)
+			button.setBackground(bgColor);
+		if(fgColor != null)
+			button.setForeground(fgColor);
 		rootPanel.add(button);
 	}
 

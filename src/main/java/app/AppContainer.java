@@ -26,41 +26,44 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import app.login.LoginApp;
 import gui.Gui;
+import gui.WrapFrame;
 import gui.panel.button.ButtonPanel;
 import gui.panel.layout.BorderLayoutPanel;
 import gui.wiget.ZonedClock;
+import util.SettingDialog;
 
 public class AppContainer {
 	private BorderLayoutPanel rootPanel = new BorderLayoutPanel();
 	private JFrame frame = new JFrame();
+	private SettingDialog settingDialog = new SettingDialog(this);
 	
 	private CardLayout cardLayout = new CardLayout();
 	private int cardIndex;
-	private JPanel cardPanel = new JPanel(cardLayout);
+	private JPanel cardPanel;
+	private AppView currentView;
 	
 	private final int rows = 3, cols = 3;
-	private JPanel container = new JPanel(new GridLayout(rows,cols,20,20));
+	private JPanel container;
 	private List<AppView> viewList = new Vector<>();
 
+	private BorderLayoutPanel topPanel, botPanel;
+	
 	private JLabel viewIconLabel = new JLabel();
 	private JLabel viewTitleLabel = new JLabel();
 	
-	private JLabel timeLabel = new JLabel(), viewCount = new JLabel();
+	private JLabel timeLabel = new JLabel(), viewInfoLabel = new JLabel();
 	//+++++++++++++++++++++++++++++++++++Style+++++++++++++++++++++++++++++++
-	private Properties style = new Properties();
 	private int width, height;
-	private Color contBg, contBorder, topBotColor, lineColor;
+	private Color contBg, contBorder, topBotColor;
 	private String timeForamt = "YYYY-MM-dd EEE HH:mm:ss";
-	private Dimension botBothSide = new Dimension(200,40);
+	private Dimension botBothSide = new Dimension(200,50);
 	private ImageIcon contIcon = new ImageIcon(IMG_PATH+"conticon.png");
 	private Font subAppTitleFont = Gui.createFont("맑은 고딕", 28);
+	private List<JPanel> iconPanels;
 	
-	public void setStyle() {
-		try { style.load(new FileReader(ArApplication.RES_PATH+"style.properties")); } 
-		catch (IOException e) {	e.printStackTrace(); }
-		String s = style.getProperty("style", "1");
+	public void setStyle(Properties style) {
+		String s = style.getProperty("style","1");
 		viewTitleLabel.setForeground(Color.WHITE);
 		viewTitleLabel.setFont(Gui.createFont(28));
 		timeLabel.setFont(Gui.createFont(17));
@@ -68,27 +71,29 @@ public class AppContainer {
 		contBg = Color.decode(style.getProperty("contBg"+s, "#FAEECB")); 
 	    contBorder = Color.decode(style.getProperty("contBorder"+s, "#7b630f"));
 		topBotColor = Color.decode(style.getProperty("topBotColor"+s, "#001130"));
-	    lineColor = Color.decode(style.getProperty("lineColor"+s, "#FF0000"));
 	    width = Integer.parseInt(style.getProperty("width", "700"));
 	    height = Integer.parseInt(style.getProperty("height", "700"));
+	    viewInfoLabel.setForeground(Color.white);
 	    
-	    viewCount.setForeground(Color.white);
+	    container.setBackground(contBg);
+	    container.setBorder(BorderFactory.createLineBorder(contBorder, 20));
+		topPanel.setBackgrounds(topBotColor);
+		botPanel.setBackgrounds(topBotColor);
+		iconPanels.forEach(p->p.setBackground(contBg));
 	}
 	//-----------------------------------Style---------------------------------
 	
     public void initComponent() {
-    	setStyle();
-    	frame.dispose();
     	viewList.clear();
     	rootPanel.getPanel().removeAll();
-    	cardPanel.removeAll();
+    	
+    	cardPanel = new JPanel(cardLayout);
+    	container = new JPanel(new GridLayout(rows,cols,20,20));
     	
     	cardPanel.setPreferredSize(new Dimension(width, height-80));
 		container.setPreferredSize(cardPanel.getPreferredSize());
-		container.setBorder(BorderFactory.createLineBorder(contBorder, 20));
-		container.setBackground(contBg);
 
-		BorderLayoutPanel topPanel = new BorderLayoutPanel();
+		topPanel = new BorderLayoutPanel();
 		JPanel topLeftPan = topPanel.newPanel(300, 40, BorderLayout.WEST);
 		topLeftPan.setLayout(new FlowLayout(FlowLayout.LEFT));
 		topLeftPan.add(viewIconLabel);
@@ -96,18 +101,21 @@ public class AppContainer {
 		
 		ButtonPanel topBtnPanel = new ButtonPanel();
 		topBtnPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-		topBtnPanel.setSize(width, 40);
-		for(int i=1; i<=5; i++) {
+		for(int i=1; i<=4; i++) {
 			final int a = i;
 			topBtnPanel.addButton(new ImageIcon(IMG_PATH+"n"+i+".PNG"), b->action(a));
 		}
 		
 		topPanel.addCenter(topBtnPanel);
-		topPanel.newPanel(botBothSide, BorderLayout.EAST);
-		topPanel.setBackgrounds(topBotColor);
+		topPanel.newPanel(BorderLayout.EAST).add(Gui.createIconLabel(IMG_PATH+"config.png", 33, 33, b->{
+			settingDialog.open();
+			Gui.placeSubWindow(getFrame(), settingDialog.getDialog(), 1);	
+			settingDialog.getDialog().setModal(true);
+		}));;
 		
-		BorderLayoutPanel botPanel = new BorderLayoutPanel();
-		botPanel.newPanel(botBothSide, BorderLayout.WEST).add(viewCount);
+		botPanel = new BorderLayoutPanel();
+		botPanel.newPanel(botBothSide, BorderLayout.WEST, FlowLayout.RIGHT).add(viewInfoLabel);
+		viewInfoLabel.setPreferredSize(new Dimension(botBothSide.width - 20, botBothSide.height));
 		
 		ButtonPanel botBtnPan = new ButtonPanel();
 		botBtnPan.addButton(new ImageIcon(IMG_PATH+"leftarrow.png"), b->move(-1));
@@ -120,7 +128,6 @@ public class AppContainer {
 		
 		botPanel.addCenter(botBtnPan);
 		botPanel.addEast(timeLabel);
-		botPanel.setBackgrounds(topBotColor);
 		
 		rootPanel.addNorth(topPanel);
 		rootPanel.addCenter(cardPanel);
@@ -131,20 +138,24 @@ public class AppContainer {
 		
 		AppService.getInstance().updateSubAppIcons();
 
+		move(0);
+		updateViewCount();
+//		rootPanel.getPanel().revalidate();
+	}
+
+    public void showFrame() {
+    	frame.dispose();
 		frame = new JFrame("항공권 예약 시스템");
 		frame.setIconImage(contIcon.getImage());
 		frame.setContentPane(rootPanel.getPanel());
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.pack();
 		frame.setVisible(true);
 		frame.setMinimumSize(new Dimension(width, height));
-		Gui.moveToCenter(frame);
-		move(0);
-		updateViewCount();
-	}
-	
+		Gui.moveToCenter(frame, width, height+80);
+    }
+    
     public void removeViews(SubApp subApp) {
-    	viewList.removeIf(view -> subApp != null && view.parentApp != null && view.parentApp.equals(subApp));
+    	viewList.removeIf(view -> subApp != null && view.parentApp() != null && view.parentApp().equals(subApp));
     	move(0);
     }
     
@@ -153,19 +164,27 @@ public class AppContainer {
 			cardPanel.remove(appView.getPanel());
 			cardLayout.removeLayoutComponent(appView.getPanel());
 			viewList.remove(appView);
+			move(-1);
 		}
-		
+		updateViewCount();
+		sysout("Remove View : " + appView, "View List:" +viewList);
 	}
 	
 	public void addView(AppView appView) {
-		if(appView == null || viewList.size() >= 25) return;
+		if(appView == null) return;
+		if(viewList.size() >= 25) {
+			WrapFrame.alert("Max View Count is 25", Gui.font(50), cardPanel);
+			return;
+		}
 		if(!viewList.contains(appView)) {
 			viewList.add(appView);
-			System.out.println(appView.getPanel());
 			cardPanel.add(appView.getPanel(), appView.getClass().getName());
 			cardIndex = viewList.size() -1;
+		}else {
+			cardIndex = viewList.indexOf(appView);
 		}
 		attachView(appView);
+		sysout("Add View : " + appView, " View List:" +viewList);
 	}
 	
 	private void attachView(AppView appView) {
@@ -174,11 +193,12 @@ public class AppContainer {
 		ImageIcon icon = appView.getImageIcon();
 		if(icon == null) icon = contIcon;
 		viewIconLabel.setIcon(icon);
+		currentView = appView;
 		updateViewCount();
 	}
 	
 	public void addAppIcons(List<SubApp> appList) {
-		container.removeAll();
+		iconPanels = new Vector<JPanel>();
 		for(int i=0; i<rows*cols; i++) {
 			if(i < appList.size())
 				addAppIcon(appList.get(i));
@@ -189,45 +209,44 @@ public class AppContainer {
 	
 	public void addAppIcon(SubApp subApp) {
 		JPanel iconPanel = new JPanel(new BorderLayout());
+		iconPanels.add(iconPanel);
 		container.add(iconPanel);
-		iconPanel.setBackground(contBg);
 		if(subApp == null) return;
 		
 		JLabel titleLabel = new JLabel(subApp.getTitle());
 		titleLabel.setHorizontalAlignment(JLabel.CENTER);
 		titleLabel.setFont(subAppTitleFont);
 		
-		JLabel iconLabel = Gui.createIconLabel(IMG_PATH+subApp.getClass().getSimpleName()+".PNG", 100, 100);
+		JLabel iconLabel = new JLabel(Gui.getResizedIcon(IMG_PATH+subApp.getClass().getSimpleName()+".PNG", IMG_PATH+"defaultimg.PNG", 100, 100));
 		iconPanel.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		iconPanel.add(iconLabel, BorderLayout.CENTER);
 		iconPanel.add(titleLabel, BorderLayout.SOUTH);
-		Gui.addBorderOnEnterMouse(iconPanel, b->addView(subApp.requestView()), lineColor, 2);
+		Gui.addBorderOnEnterMouse(iconPanel, b->addView(subApp.requestView()), 2);
 	}
 	
 	public void move(int d) {
 		if(AppService.getInstance().getMember() == null) return;
 		
+		currentView = null;
 		if(d == 0 || viewList.isEmpty()) {
 			cardLayout.show(cardPanel, container.getName());
 			viewTitleLabel.setText("Home");
 			viewIconLabel.setIcon(contIcon);
-			return;
-		} 
-		if(d == -10 && cardIndex >= 0 && cardIndex < viewList.size()) {
+			cardIndex = -1;
+		} else if(d == -10 && cardIndex >= 0 && cardIndex < viewList.size()) {
 			removeView(viewList.get(cardIndex));
-			move(-1);
 		} else {
 			cardIndex += d;
 			if(cardIndex < 0) cardIndex = viewList.size() -1;
 			else if(cardIndex >= viewList.size()) cardIndex = 0;
 			attachView(viewList.get(cardIndex));
-			sysout(cardIndex);
 		}
+		updateViewCount();
 	}
 	
 	public void update() {
 		LocalDateTime time = LocalDateTime.now();
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(timeForamt );
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(timeForamt);
 	    String formattedTime = time.format(formatter);
 		timeLabel.setText(formattedTime);
 		viewList.forEach(view->view.update(time));
@@ -239,41 +258,62 @@ public class AppContainer {
 	
 	//_______________________________________DEBUG_______________________________________________
 	public void updateViewCount() {
-		viewCount.setText("View Count : " + viewList.size() + "  Card Index : " + cardIndex);
+		String text = "<html>View Count : "+ viewList.size() + "<br>" +
+						    "Card Index : "+ cardIndex + "<br>" +
+		                    "Current View : "+ (currentView != null ? currentView.getClass().getSimpleName() : "Home") +" </html>";
+		viewInfoLabel.setText(text);
 	}
 	
 	public void action(int i) {
-		AppService a = AppService.getInstance();
+//		AppService a = AppService.getInstance();
 
 		if(i==1) {
-			a.addSubApp(new LoginApp());
-			a.updateSubAppIcons();
+//			a.addSubApp(new LoginApp());
+//			a.updateSubAppIcons();
 		}
 		if(i==2) { 
-//			style.setProperty("style", "2");
 //			initComponent();
-			a.removeSubApp(a.getSubApp(LoginApp.class));
+//			a.removeSubApp(a.getSubApp(LoginApp.class));
 		}
 		
 		if(i==3) {
-			File file = Gui.getFile(frame, new File(ArApplication.RES_PATH), ".jar");
+			Gui.getFile(frame, new File(ArApplication.RES_PATH), ".jar");
+//			File file = Gui.getFile(frame, new File(ArApplication.RES_PATH), ".jar");
+//			sysout("selected File : ", file);
 		}
 //			AppService.getInstance().updateSubAppIcons();
 		
 		if(i==4) {
 			addView(
 				new AppView() {
+					ZonedClock z = new ZonedClock(200);
+					{initRootPanel();}
 					@Override
 					public void initRootPanel() {
-						rootPanel.add(new ZonedClock().getPanel());
-						// TODO Auto-generated method stub
+						z.setFontColor(Gui.createFont(20), Color.yellow, Color.BLACK);
+						z.initRootPanel();
+
+						rootPanel.add(z.getPanel());
+						
+						rootPanel.add(new JLabel("asds"));
+					}
+					@Override
+					public void update(LocalDateTime time) {
+						z.setTime(time);
 					}
 				});
 			}
 		sysout(i);
 		
 		if(i == 5) {
-			sysout(frame.getSize());
+			WrapFrame.mouseTooltip(viewInfoLabel, "TOOL TIP!!", 150, 45, null);
+		}
+		if( i == 6) {
+			WrapFrame.greenAlert(container);
+		}
+		
+		if(i == 7) {
+			WrapFrame.alert("alert!!", container);
 		}
 	}
 	//_______________________________________DEBUG_______________________________________________
