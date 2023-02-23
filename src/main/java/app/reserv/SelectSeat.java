@@ -289,13 +289,11 @@ public class SelectSeat extends AppView implements ActionListener, ItemListener 
 //		blPanel.newPanel(BorderLayout.SOUTH).add(b.getPanel());
 		// CenterPanel 추가
 		
-		System.out.println("asd"+rootPanel);
 		rootPanel.setLayout(null);
 		// 패널 공백 위로 60 , 왼쪽 10
 		rootPanel.setBorder(BorderFactory.createEmptyBorder(60, 0, 10, 0));
 //		blPanel.addCenter(panel);
 
-		System.out.println(rootPanel);
 		titlePanel.setBounds(0, 0, 812, 31);
 		rootPanel.add(titlePanel);
 		titlePanel.setLayout(null);
