@@ -54,4 +54,9 @@ public class GridBagPanel extends CustomPanel{
 		gbc.gridwidth = maxgridx;
 		add(panel.getPanel(), 1, ++gbc.gridy, 1, 1);
 	}
+	
+	public void removeAll() {
+		super.removeAll();
+		gbc = new GridBagConstraints();
+	}
 }

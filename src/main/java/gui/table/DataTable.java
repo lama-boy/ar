@@ -6,10 +6,10 @@ import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
 @SuppressWarnings("serial")
-public class DataListTable extends ListTable {
+public class DataTable extends ListTable {
 	private List<?> dataList;
 	
-	public DataListTable(List<?> dataList) {
+	public DataTable(List<?> dataList) {
 		this.dataList = dataList;
 		tableModel = new DataTableModel();
 		setModel(tableModel);

@@ -37,9 +37,13 @@ public class SqlUtil {
 	 * @return 첫 행은 칼럼 이름으로 사용된다.
 	 */
 	public List<List<String>> select(String query) {
+		return select(query, true);
+	}
+	
+	public List<List<String>> select(String query, boolean withColumnName) {
 		StringListRowMapper rowMapper = new StringListRowMapper();
 		List<List<String>> result = jdbcTemplate.query(query, rowMapper);
-		result.add(0, rowMapper.getColumnNames());
+		if(withColumnName) result.add(0, rowMapper.getColumnNames());
 		return result;
 	}
 

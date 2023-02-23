@@ -1,12 +1,12 @@
 package app;
 
 import java.time.LocalDateTime;
-import java.util.Properties;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 import gui.Gui;
+import util.Style;
 
 public abstract class AppView {
 	protected JPanel rootPanel = new JPanel();
@@ -58,7 +58,10 @@ public abstract class AppView {
 		//시간흐름 관련 기능을 추가 하고싶으면 오버라이드해서 사용
 	}
 	
-	public void setStyle(Properties style) {
+	/**
+	 * @param style.json의 스타일 을 참조합니다. 적용하고 싶으면 오버라이드
+	 */
+	public void setStyle(Style style) {
 		
 	}
 	

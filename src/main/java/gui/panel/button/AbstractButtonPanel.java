@@ -12,9 +12,10 @@ import javax.swing.AbstractButton;
 import javax.swing.ImageIcon;
 
 import gui.panel.CustomPanel;
+import gui.panel.input.InputComponent;
 
-public abstract class AbstractButtonPanel extends CustomPanel{
-	private List<AbstractButton> buttonList = new Vector<>();
+public abstract class AbstractButtonPanel extends CustomPanel {
+	protected List<AbstractButton> buttonList = new Vector<>();
 	
 	private Dimension buttonSize;
 	
@@ -120,7 +121,12 @@ public abstract class AbstractButtonPanel extends CustomPanel{
 		buttonList.forEach(b -> { b.setSelected(false); });
 	}
 	
-	public String getValue() {
-		return buttonList.stream().map(b -> b.getName()).collect(Collectors.joining(","));
+//	public String getValue() {
+//		return buttonList.stream().map(b -> b.getName()).collect(Collectors.joining(","));
+//	}
+	
+	public void removeAll() {
+		super.removeAll();
+		buttonList.clear();
 	}
 }

@@ -8,7 +8,9 @@ import javax.swing.AbstractButton;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 
-public class CheckBoxPanel extends AbstractButtonPanel{
+import gui.panel.input.InputComponent;
+
+public class CheckBoxPanel extends AbstractButtonPanel implements InputComponent{
 
 	@Override
 	public void addButton(String name, Consumer<?> c) {
@@ -35,14 +37,35 @@ public class CheckBoxPanel extends AbstractButtonPanel{
 		settingButton(new JCheckBox(icon), null);
 	}
 
+	public List<AbstractButton> getSelectedButtons() {
+		return getButtonList().stream().filter(AbstractButton::isSelected)
+				.collect(Collectors.toList());
+	}
+
 	@Override
 	public String getValue() {
 		return getButtonList().stream().filter(AbstractButton::isSelected)
 				.map(b->b.getName()).collect(Collectors.joining(","));
 	}
+	
+	@Override
+	public void setValue(Object value) {
+		String val = value.toString();
+		buttonList.forEach(b->{
+			if(b.getName().equals(val)) {
+				b.setSelected(true);
+				return;
+			}
+		});
+		if (val.matches("-?\\d+(\\.\\d+)?")) {
+			int i = Integer.parseInt(val);
+			if(i>=0 && i<buttonList.size())
+				buttonList.get(i).setSelected(true);
+        }
+	}
 
-	public List<AbstractButton> getSelectedButtons() {
-		return getButtonList().stream().filter(AbstractButton::isSelected)
-				.collect(Collectors.toList());
+	@Override
+	public void reset() {
+		buttonList.forEach(b->b.setSelected(false));
 	}
 }

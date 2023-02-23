@@ -30,9 +30,9 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import app.ArApplication;
 import gui.panel.CustomPanel;
 import gui.panel.button.RoundButton;
-import gui.table.DataListTable;
+import gui.table.DataTable;
 import gui.table.ListTable;
-import gui.table.StringListTable;
+import gui.table.StringTable;
 
 public final class Gui {
 	public static final String IMG_PATH = ArApplication.IMG_PATH;
@@ -135,17 +135,21 @@ public final class Gui {
         }
     }
  
+	public static StringTable createStringTable() {
+		return new StringTable();
+	}
+	
 	@SuppressWarnings("unchecked")
 	public static ListTable createTable(List<?> dataList) {
 		if(dataList == null || dataList.get(0) == null) 
-			return null;
+			return new ListTable();
 		
 		if(dataList.get(0) instanceof List) {
 			if(((List<?>)dataList.get(0)).get(0) instanceof String) {
-				return new StringListTable((List<List<String>>) dataList);
+				return new StringTable((List<List<String>>) dataList);
 			}
 		}
-		return new DataListTable(dataList);
+		return new DataTable(dataList);
 	}
 	
 	public static JFrame createFrame(CustomPanel panel) {

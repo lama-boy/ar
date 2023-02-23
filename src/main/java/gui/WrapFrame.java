@@ -24,10 +24,6 @@ public class WrapFrame implements Runnable {
 	private boolean dispose = true;
 	private JComponent parent;
 	
-	public void setDispose(boolean dispose) {
-		this.dispose = dispose;
-	}
-	
 	public static final Font DEFAULT_FONT = new Font("맑은 고딕", Font.PLAIN, 20);
 	
 	public WrapFrame(JComponent parent, JComponent comp) {
@@ -67,6 +63,7 @@ public class WrapFrame implements Runnable {
 	}
 	
 	public void start(int dx, int dy, int sx, int sy) {
+		if(!parent.isShowing()) return;
 		Point p = parent.getLocationOnScreen();
 		if(dx != 0) p.x = dx;
 		if(dx != 0) p.y = dy;
@@ -103,27 +100,40 @@ public class WrapFrame implements Runnable {
 			rootFrame.setVisible(false);
 	}
 	
+	public void setDispose(boolean dispose) {
+		this.dispose = dispose;
+	}
+
+	
 	public static void alert(JComponent... parents) {
-		alert(null, null, parents);
+		alert(null, null, null, null, parents);
 	}
 	
 	public static void alert(String msg, JComponent... parents) {
-		alert(msg, null, parents);
+		alert(msg, null, null, null, parents);
 	}
 	
 	public static void alert(String msg, Font font, JComponent... parents) {
+		alert(msg, null, null, font, parents);
+	}
+	
+	public static void alert(String msg, Color bgColor, Color fgColor, JComponent... parents) {
+		alert(msg, bgColor, fgColor, null, parents);
+	}
+	
+	public static void alert(String msg, Color bgColor, Color fgColor, Font font, JComponent... parents) {
 		for(JComponent parent : parents) {
 			WrapFrame frame = new WrapFrame(parent);
 			if(msg != null) {
 				JLabel label = new JLabel(msg);
 				label.setHorizontalAlignment(JLabel.CENTER);
-				label.setForeground(Color.YELLOW);
+				label.setForeground(fgColor == null ? Color.YELLOW : fgColor);
 				if(font == null) 
 					font = Gui.font(40);
 				label.setFont(font);
 				frame.getFrame().getContentPane().add(label);
 			}
-			frame.setPanelColor(Color.RED);
+			frame.setPanelColor(bgColor == null ? Color.RED : bgColor);
 			frame.setProperties(0, 0.12f, 0.7f, 170);
 			frame.start();	
 		}
@@ -156,28 +166,32 @@ public class WrapFrame implements Runnable {
 	}
 	
 	public static void greenAlert(JComponent parent) {
-		greenAlert(parent, null, null);
+		greenAlert(null, parent, null);
 	}
 	
-	public static void greenAlert(JComponent parent, String msg) {
-		greenAlert(parent, msg, null);
+	public static void greenAlert(String msg, JComponent parent) {
+		greenAlert(msg, parent, null);
 	}
 	
-	public static void greenAlert(JComponent parent, String msg, Font font, int inWidth, int inHeight) {
+	public static void greenAlert(String msg, JComponent parent, Font font) {
+		greenAlert(msg, parent, font, -1, -1);
+	}
+	
+	public static void greenAlert(String msg, JComponent parent, Font font, int inWidth, int inHeight) {
 		WrapFrame frame = new WrapFrame(parent);
-		Color outColor = new Color(240, 255, 240);
+		Color outColor = new Color(245, 255, 240);
 		frame.getFrame().getContentPane().setLayout(null);
 		JPanel inPanel = new JPanel();
-		inPanel.setBackground(new Color(201, 255, 210));
+		inPanel.setBackground(new Color(220, 255, 220));
 		Dimension size = parent.getSize();
-		if(inWidth == -1) inWidth = 500;
+		if(inWidth == -1) inWidth = msg.getBytes().length * 20;
 		if(inHeight == -1) inHeight = 70;
 		JLabel iconLabel = Gui.createIconLabel(Gui.IMG_PATH+"success.png");
 		if(size.width < 50 || size.height < 50)
 			iconLabel.setIcon(Gui.getResizedIcon(Gui.IMG_PATH+"success.png", Math.min(size.width, size.height), Math.min(size.width, size.height)));
 		inPanel.add(iconLabel);
 		if(msg != null && !msg.isEmpty()) {
-			inPanel.setBorder(new LineBorder(Color.GREEN, 3));
+			inPanel.setBorder(new LineBorder(new Color(70,150,70), 3));
 			JLabel label = new JLabel(msg);
 			label.setHorizontalAlignment(JLabel.CENTER);
 			label.setForeground(new Color(0, 123, 0));
@@ -191,11 +205,7 @@ public class WrapFrame implements Runnable {
 		inPanel.setBounds(size.width/2-inWidth/2, size.height/2 - (inHeight/2) - 10 , inWidth, inHeight);
 		frame.getFrame().getContentPane().add(inPanel, BorderLayout.CENTER);
 		frame.setPanelColor(outColor);
-		frame.setProperties(0, 0.12f, 0.8f, 230);
+		frame.setProperties(0, 0.16f, 0.9f, 230);
 		frame.start();
-	}
-	
-	public static void greenAlert(JComponent parent, String msg, Font font) {
-		greenAlert(parent, msg, font, -1, -1);
 	}
 }

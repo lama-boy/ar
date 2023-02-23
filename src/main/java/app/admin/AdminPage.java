@@ -13,7 +13,7 @@ import dao.DAO;
 import gui.Gui;
 import gui.panel.button.ButtonPanel;
 import gui.panel.layout.BorderLayoutPanel;
-import gui.table.ListTable;
+import gui.table.StringTable;
 
 public class AdminPage extends AppView{
 	private AdminApp adminApp;
@@ -49,12 +49,17 @@ public class AdminPage extends AppView{
 		
 		ButtonPanel botBtnPanel = new ButtonPanel();
 		rootblPanel.addSouth(botBtnPanel);
-//		botBtnPanel.addButton("test1", b->test(1));
-//		botBtnPanel.addButton("test2", b->test(2));
+		botBtnPanel.addButton("여행 패키지 등록", b->action(1));
 		
 		createTable(0);
 	}
 	
+	private void action(int i) {
+		switch (i) {
+			case 1: adminApp.openPackage(); break;
+		}
+	}
+
 	public void createTable(int i) {
 		final int tableCount = 3;
 		tableIndex += i;
@@ -68,7 +73,7 @@ public class AdminPage extends AppView{
 		}
 		titleLabel.setText(title);
 		tablePanel.removeAll();
-		ListTable table = Gui.createTable(DAO.sql.select(query));
+		StringTable table = new StringTable(DAO.sql.select(query));
 		table.setColumnsSize(200,400,200);
 		tablePanel.add(new JScrollPane(table));
 	}

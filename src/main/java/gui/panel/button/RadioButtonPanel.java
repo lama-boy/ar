@@ -7,8 +7,10 @@ import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JRadioButton;
 
-public class RadioButtonPanel extends AbstractButtonPanel{
-	ButtonGroup buttonGroup = new ButtonGroup();;
+import gui.panel.input.InputComponent;
+
+public class RadioButtonPanel extends AbstractButtonPanel implements InputComponent{
+	ButtonGroup buttonGroup = new ButtonGroup();
 	
 	@Override
 	public void addButton(String name, Consumer<?> c) {
@@ -46,5 +48,16 @@ public class RadioButtonPanel extends AbstractButtonPanel{
 		for(AbstractButton button : getButtonList())
 			if(button.isSelected()) return button.getName();
 		return null;
+	}
+
+	@Override
+	public void setValue(Object value) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void reset() {
+		if(!buttonList.isEmpty()) buttonList.get(0).setSelected(true);
 	}
 }

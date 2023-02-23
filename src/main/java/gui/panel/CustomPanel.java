@@ -39,4 +39,8 @@ public class CustomPanel {
 		rootPanel.setBackground(bgColor);
 		return this;
 	}
+	
+	public void removeAll() {
+		rootPanel.removeAll();
+	}
 }

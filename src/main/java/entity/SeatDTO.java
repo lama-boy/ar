@@ -3,39 +3,48 @@ package entity;
 import javax.swing.JCheckBox;
 
 public class SeatDTO extends JCheckBox{
-	private int Row;
-	private int Column;
-	private boolean isSelected;
-	private int airNum;
+	private String airnum;
+	private String seatNumber;
+	private String seatGrade;
+	private String reserved;
+	private String depDate;
 	public SeatDTO() {}
-	public SeatDTO(int row, int column, boolean isSelected, int airNum) {
-		Row = row;
-		Column = column;
-		this.isSelected = isSelected;
-		this.airNum = airNum;
+	public SeatDTO(String airnum, String seatNumber, String seatGrade, String reserved, String depDate) {
+		super();
+		this.airnum = airnum;
+		this.seatNumber = seatNumber;
+		this.seatGrade = seatGrade;
+		this.reserved = reserved;
+		this.depDate = depDate;
 	}
-	public int getRow() {
-		return Row;
+	public String getAirnum() {
+		return airnum;
 	}
-	public void setRow(int row) {
-		Row = row;
+	public void setAirnum(String airnum) {
+		this.airnum = airnum;
 	}
-	public int getColumn() {
-		return Column;
+	public String getSeatNumber() {
+		return seatNumber;
 	}
-	public void setColumn(int column) {
-		Column = column;
+	public void setSeatNumber(String seatNumber) {
+		this.seatNumber = seatNumber;
 	}
-	public boolean isSelected() {
-		return isSelected;
+	public String getSeatGrade() {
+		return seatGrade;
 	}
-	public void setSelected(boolean isSelected) {
-		this.isSelected = isSelected;
+	public void setSeatGrade(String seatGrade) {
+		this.seatGrade = seatGrade;
 	}
-	public int getairNum() {
-		return airNum;
+	public String getReserved() {
+		return reserved;
 	}
-	public void setairNum(int airNum) {
-		this.airNum = airNum;
+	public void setReserved(String reserved) {
+		this.reserved = reserved;
+	}
+	public String getDepDate() {
+		return depDate;
+	}
+	public void setDepDate(String depDate) {
+		this.depDate = depDate;
 	}
 }

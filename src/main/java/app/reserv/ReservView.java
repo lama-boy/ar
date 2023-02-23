@@ -20,10 +20,11 @@ import app.AppView;
 import app.SubApp;
 
 public class ReservView extends AppView{
-	private Reservation login;
+	private Reservation reserv;
 
-	public ReservView(SubApp parentApp) {
-		super("예약 A", parentApp);
+	public ReservView(Reservation reserv) {
+		super("예약 A", reserv);
+		this.reserv = reserv;
 		initRootPanel();
 	}
 
@@ -170,6 +171,10 @@ public class ReservView extends AppView{
 		
 		nextBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				if(e!=null) {
+					reserv.openSeatView();
+					return;
+				}
 				
 				// 좌석 등급 선택 값 가져오기
 				String seatGrade = seatCombo.getSelectedItem().toString();
