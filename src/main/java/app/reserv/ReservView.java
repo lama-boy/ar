@@ -17,9 +17,12 @@ import javax.swing.JPanel;
 import com.toedter.calendar.JDateChooser;
 
 import app.AppView;
+import dao.TicketDAO;
+import entity.TicketDTO;
 
 public class ReservView extends AppView{
 	private Reservation reserv;
+	private TicketDTO ticketDTO;
 
 	public ReservView(Reservation reserv) {
 		super("예약 A", reserv);
@@ -36,99 +39,101 @@ public class ReservView extends AppView{
 		JPanel panel = new JPanel();
 		panel.setBackground(new Color(224, 255, 255));
 		panel.setBorder(null);
-		panel.setBounds(187, 55, 466, 51);
+		panel.setBounds(113, 56, 466, 51);
 		rootPanel.add(panel);
 		
 	    // 페이지 제목
 		JLabel pageLbl = new JLabel("예약하기");
+		pageLbl.setBounds(194, 10, 80, 27);
 		pageLbl.setFont(new Font("맑은 고딕", Font.BOLD, 20));
 		panel.add(pageLbl);
 		
 		// 좌석 등급
 		JLabel seatGrLbl = new JLabel("좌석 등급");
 		seatGrLbl.setFont(new Font("맑은 고딕", Font.BOLD, 17));
-		seatGrLbl.setBounds(167, 152, 76, 24);
+		seatGrLbl.setBounds(136, 143, 76, 24);
 		rootPanel.add(seatGrLbl);
 		// 좌석 등급 콤보박스
 		JComboBox seatCombo = new JComboBox();
 		seatCombo.setBackground(new Color(255, 255, 255));
 		seatCombo.setModel(new DefaultComboBoxModel(new String[] {"이코노미", "비즈니스", "퍼스트클래스"}));
 		seatCombo.setFont(new Font("맑은 고딕", Font.PLAIN, 16));
-		seatCombo.setBounds(307, 153, 138, 23);
+		seatCombo.setBounds(307, 144, 138, 23);
 		rootPanel.add(seatCombo);
 		
 		// 출발지
 		JLabel depLbl = new JLabel("출발지");
 		depLbl.setFont(new Font("맑은 고딕", Font.BOLD, 17));
-		depLbl.setBounds(167, 214, 76, 24);
+		depLbl.setBounds(136, 195, 76, 24);
 		rootPanel.add(depLbl);
 		// 출발지 콤보박스
 		JComboBox depCombo = new JComboBox();
-		depCombo.setModel(new DefaultComboBoxModel(new String[] {"인천", "런던", "바르셀로나", "발리", "방콕", "부산", "시드니", "싱가포르", "제주", "파리", "호놀룰루"}));
+		depCombo.setModel(new DefaultComboBoxModel(new String[] {"인천", "부산", "제주", "김포", "런던", "바르셀로나", "다낭", "방콕", "로스앤젤레스", "싱가포르", "파리", "오사카", "도쿄/나리타"}));
 		depCombo.setFont(new Font("맑은 고딕", Font.PLAIN, 16));
-		depCombo.setBounds(307, 215, 138, 23);
+		String depPlace = depCombo.getSelectedItem().toString();
+		depCombo.setBounds(307, 196, 138, 23);
 		rootPanel.add(depCombo);
 		
 		// 도착지
 		JLabel arrLbl = new JLabel("도착지");
 		arrLbl.setFont(new Font("맑은 고딕", Font.BOLD, 17));
-		arrLbl.setBounds(167, 273, 76, 24);
+		arrLbl.setBounds(136, 245, 76, 24);
 		rootPanel.add(arrLbl);
 		// 도착지 콤보박스
 		JComboBox arrCombo = new JComboBox();
-		arrCombo.setModel(new DefaultComboBoxModel(new String[] {"런던", "바르셀로나", "발리", "방콕", "부산", "시드니", "싱가포르", "서울/김포", "제주", "파리", "호놀룰루"}));
+		arrCombo.setModel(new DefaultComboBoxModel(new String[] {"부산", "인천", "제주", "김포", "런던", "바르셀로나", "다낭", "방콕", "로스앤젤레스", "싱가포르", "파리", "오사카", "도쿄/나리타"}));
 		arrCombo.setFont(new Font("맑은 고딕", Font.PLAIN, 16));
-		arrCombo.setBounds(307, 273, 138, 23);
+		arrCombo.setBounds(307, 246, 138, 23);
 		rootPanel.add(arrCombo);
 		
 		// 출발 날짜
 		JLabel depDateLbl = new JLabel("출발 날짜");
 		depDateLbl.setFont(new Font("맑은 고딕", Font.BOLD, 17));
-		depDateLbl.setBounds(167, 330, 76, 24);
+		depDateLbl.setBounds(136, 296, 76, 24);
 		rootPanel.add(depDateLbl);
 		// DateChooser로 출발 날짜 선택
 		JDateChooser depDateChooser = new JDateChooser();
 		depDateChooser.setMinSelectableDate(new Date()); //오늘 이전 날은 선택 금지함
-		depDateChooser.setBounds(307, 330, 138, 21);
+		depDateChooser.setBounds(307, 299, 138, 21);
 		rootPanel.add(depDateChooser);
 		
 		// 도착 날짜
 		JLabel arrDateLbl = new JLabel("도착 날짜");
 		arrDateLbl.setFont(new Font("맑은 고딕", Font.BOLD, 17));
-		arrDateLbl.setBounds(167, 382, 76, 24);
+		arrDateLbl.setBounds(136, 350, 76, 24);
 		rootPanel.add(arrDateLbl);
 		// DateChooser로 도착 날짜 선택
 		JDateChooser arrDateChooser = new JDateChooser();
 		arrDateChooser.setMinSelectableDate(new Date()); //오늘 이전 날은 선택 금지함
-		arrDateChooser.setBounds(307, 382, 138, 21);
+		arrDateChooser.setBounds(307, 353, 138, 21);
 		rootPanel.add(arrDateChooser);
 		
 		// 인원 수
 		JLabel humanCntLbl = new JLabel("인원 수");
 		humanCntLbl.setFont(new Font("맑은 고딕", Font.BOLD, 17));
-		humanCntLbl.setBounds(167, 440, 76, 24);
+		humanCntLbl.setBounds(136, 410, 76, 24);
 		rootPanel.add(humanCntLbl);
 		// 성인
 		JLabel adultLbl = new JLabel("성인");
 		adultLbl.setFont(new Font("맑은 고딕 Semilight", Font.BOLD, 17));
-		adultLbl.setBounds(285, 441, 57, 21);
+		adultLbl.setBounds(286, 412, 57, 21);
 		rootPanel.add(adultLbl);
 		//성인 수 선택
 		JComboBox adultCombo = new JComboBox();
 		adultCombo.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4", "5"}));
 		adultCombo.setFont(new Font("맑은 고딕", Font.PLAIN, 16));
-		adultCombo.setBounds(336, 441, 54, 23);
+		adultCombo.setBounds(339, 411, 54, 23);
 		rootPanel.add(adultCombo);
 		// 소아
 		JLabel kidLbl = new JLabel("소아");
 		kidLbl.setFont(new Font("맑은 고딕 Semilight", Font.BOLD, 17));
-		kidLbl.setBounds(437, 441, 57, 21);
+		kidLbl.setBounds(416, 412, 57, 21);
 		rootPanel.add(kidLbl);
 		// 소아 수 선택
 		JComboBox kidCombo = new JComboBox();
 		kidCombo.setModel(new DefaultComboBoxModel(new String[] {"0", "1", "2", "3", "4", "5"}));
 		kidCombo.setFont(new Font("맑은 고딕", Font.PLAIN, 16));
-		kidCombo.setBounds(487, 441, 54, 23);
+		kidCombo.setBounds(467, 411, 54, 23);
 		rootPanel.add(kidCombo);
 		
 		// 예약취소: 예약하기 전 페이지로 돌아감
@@ -141,7 +146,7 @@ public class ReservView extends AppView{
 		cancelBtn.setForeground(new Color(255, 0, 0));
 		cancelBtn.setBackground(new Color(224, 255, 255));
 		cancelBtn.setFont(new Font("맑은 고딕", Font.BOLD, 16));
-		cancelBtn.setBounds(167, 522, 132, 40);
+		cancelBtn.setBounds(113, 472, 132, 40);
 		rootPanel.add(cancelBtn);
 		
 		//초기화: 모든 선택 값을 초기 상태로 되돌림
@@ -160,7 +165,7 @@ public class ReservView extends AppView{
 		resetBtn.setForeground(new Color(0, 0, 0));
 		resetBtn.setFont(new Font("맑은 고딕", Font.BOLD, 16));
 		resetBtn.setBackground(new Color(224, 255, 255));
-		resetBtn.setBounds(362, 522, 132, 40);
+		resetBtn.setBounds(279, 472, 132, 40);
 		rootPanel.add(resetBtn);
 		
 		//--------------------------------------------------------------------------
@@ -170,9 +175,11 @@ public class ReservView extends AppView{
 		
 		nextBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
 				// 좌석 등급 선택 값 가져오기
 				String seatGrade = seatCombo.getSelectedItem().toString();
 				System.out.println(seatGrade);
+				
 				
 				// 출발지 선택 값 가져오기
 				String depPlace = depCombo.getSelectedItem().toString();
@@ -197,6 +204,16 @@ public class ReservView extends AppView{
 				int humanCnt = adultCnt + kidCnt;
 				System.out.println("인원 수: " + humanCnt + " 성인: " + adultCnt + " 소아: " + kidCnt);
 				
+				ticketDTO = new TicketDTO();
+				
+				ticketDTO.setDepPlace(depPlace);
+				ticketDTO.setArrPlace(arrPlace);
+				ticketDTO.setDepDate(depDate);
+				ticketDTO.setArrDate(arrDate);
+				ticketDTO.setAdultCnt(adultCnt);
+				ticketDTO.setKidCnt(kidCnt);
+				ticketDTO.setHumanCnt(humanCnt);
+				
 				// 알림 메시지 - 메시지 출력 / 내용이 같으면 출력 후 선택 값 초기화
 				if(depPlace.equals(arrPlace)) {
 					JOptionPane.showMessageDialog(null, "출발지와 도착지가 같습니다. 다시 선택해주세요.", "중복 오류", JOptionPane.WARNING_MESSAGE);
@@ -219,10 +236,11 @@ public class ReservView extends AppView{
 		nextBtn.setForeground(new Color(30, 144, 255));
 		nextBtn.setFont(new Font("맑은 고딕", Font.BOLD, 16));
 		nextBtn.setBackground(new Color(224, 255, 255));
-		nextBtn.setBounds(556, 522, 132, 40);
+		nextBtn.setBounds(447, 472, 132, 40);
 		rootPanel.add(nextBtn);
 	}
 
+	
 	public boolean validate() {
 		return false;
 	}
