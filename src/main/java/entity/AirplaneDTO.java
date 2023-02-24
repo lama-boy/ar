@@ -38,11 +38,11 @@ public class AirplaneDTO {
 	public void setArrDate(String arrDate) {
 		this.arrDate = arrDate;
 	}
-	public String getarrCountry() {
-		return arrCountry;
+	public String getArrPlace() {
+		return arrPlace;
 	}
-	public void setarrCountry(String arrCountry) {
-		this.arrCountry = arrCountry;
+	public void setArrPlace(String arrPlace) {
+		this.arrPlace = arrPlace;
 	}
 	public String getArrTime() {
 		return arrTime;
@@ -52,8 +52,8 @@ public class AirplaneDTO {
 	}
 	@Override
 	public String toString() {
-		return "AirplaneDTO [airNum=" + airNum + ", depPlace=" + depPlace + ", depDate=" + depDate + ", arrCountry="
-				+ arrCountry + ", arrTime=" + arrTime + "]";
+		return "AirplaneDTO [airNum=" + airNum + ", depPlace=" + depPlace + ", depDate=" + depDate + ", arrPlace="
+				+ arrPlace + ", arrTime=" + arrTime + "]";
 	}
 
 }
