@@ -30,55 +30,60 @@ import gui.panel.layout.BorderLayoutPanel;
 
 public class SelectSeat extends AppView implements ActionListener, ItemListener {
 
-	// DTO
-	private TicketDTO ticket;
-	private AirplaneDTO aDTO;
-	private SeatDTO seat;
+	public class SelectSeat extends AppView implements ActionListener, ItemListener {
 
-	private ArrayList<String> reservedSeat = new ArrayList<String>();
+		// DTO
+		private TicketDTO ticket;
+		private AirplaneDTO aDTO;
+		private SeatDTO seat;
 
-	private Reservation reservation;
-	
-	// DAO
-	private AirplaneDAO aDao;
-	private SeatDAO sDao;
-	private TicketDAO ticketDao; // 등록 용도
+		private ArrayList<String> reservedSeat = new ArrayList<String>();
+		
+		private Reservation reservation;
 
-	private int person = 0;// 좌석에 등록할 인원수.
-	private int personCheck = 0; // 좌석 등록할 인원수 check용
+		// DAO
+		private AirplaneDAO aDao;
+		private SeatDAO sDao;
+		private TicketDAO ticketDao; // 등록 용도
 
-	// 좌석을 미리 배열로 만들어 놓아야 한다.
-	// 행, 열
-	private JCheckBox[][] seats = new JCheckBox[10][8];
-	private Vector<String> seatsNumber = new Vector<String>(); // 여기에 check한 좌석이 저장된다.
-	private Vector<JLabel> seatDetails = new Vector<>();
 
-	private JPanel titlePanel = new JPanel();
-	private JPanel leftPanel = new JPanel();
-	private JPanel seatPanel = new JPanel();
-	private JPanel panel_1 = new JPanel();
-	private JPanel panel_2 = new JPanel();
-	private JPanel leftBottomPanel = new JPanel();
-	private JLabel lblNewLabel_1_1 = new JLabel("비행기 :");
-	private JLabel lblNewLabel_3_1 = new JLabel("날짜 :");
-	private JLabel lblNewLabel_5 = new JLabel("인원 :");
-	private JLabel lblNewLabel_7 = new JLabel("\uAE08\uC561 :");
+		
+		private int person = 0;// 좌석에 등록할 인원수.
+		private int personCheck = 0; // 좌석 등록할 인원수 check용
 
-	static SeatDTO seatDTO() {
-		return new SeatDTO("asd","asd","sad","asd","asd");
-	}
-	
-	private JLabel titleLabel = new JLabel("-");
-	private JLabel airplaneLabel = new JLabel("-");
-	private JLabel dateLabel = new JLabel("-");
-	private JLabel personLabel = new JLabel("-");
-	private JLabel costLabel = new JLabel("-");
+		// 좌석을 미리 배열로 만들어 놓아야 한다.
+		// 행, 열
+		private int row;
+		private int col;
+		private JCheckBox[][] seats = new JCheckBox[row][col];
+		private Vector<String> seatsNumber = new Vector<String>(); // 여기에 check한 좌석이 저장된다.
+		private Vector<JLabel> seatDetails = new Vector<>();
 
-	private final JLabel checkSeatLabel = new JLabel("\uC120\uD0DD\uD55C \uC88C\uC11D \uBC88\uD638");
-	private JButton ticketingButton = new JButton("\uC88C\uC11D\uC120\uD0DD ");
-	private JButton reCheckSeatButton = new JButton("다시 선택");
-	private JLabel seatInfoLabel = new JLabel("\uC88C\uC11D \uD604\uD669");
-	private JLabel seatInfoDetailLabel = new JLabel("80 / 80");
+		private ArrayList<Integer> RowAndCol = new ArrayList<Integer>();
+
+
+		private JPanel titlePanel = new JPanel();
+		private JPanel leftPanel = new JPanel();
+		private JPanel seatPanel = new JPanel();
+		private JPanel panel_1 = new JPanel();
+		private JPanel panel_2 = new JPanel();
+		private JPanel leftBottomPanel = new JPanel();
+		private JLabel lblNewLabel_1_1 = new JLabel("비행기 :");
+		private JLabel lblNewLabel_3_1 = new JLabel("날짜 :");
+		private JLabel lblNewLabel_5 = new JLabel("인원 :");
+		private JLabel lblNewLabel_7 = new JLabel("\uAE08\uC561 :");
+
+		private JLabel titleLabel = new JLabel("-");
+		private JLabel airplaneLabel = new JLabel("-");
+		private JLabel dateLabel = new JLabel("-");
+		private JLabel personLabel = new JLabel("-");
+		private JLabel costLabel = new JLabel("-");
+
+		private final JLabel checkSeatLabel = new JLabel("\uC120\uD0DD\uD55C \uC88C\uC11D \uBC88\uD638");
+		private JButton ticketingButton = new JButton("\uC88C\uC11D\uC120\uD0DD ");
+		private JButton reCheckSeatButton = new JButton("다시 선택");
+		private JLabel seatInfoLabel = new JLabel("\uC88C\uC11D \uD604\uD669");
+		private JLabel seatInfoDetailLabel = new JLabel(""+row*col+ "/"+ row*col);
 
 	public SelectSeat(Reservation reservation, TicketDTO ticket) {
 		this.reservation = reservation;
@@ -92,16 +97,15 @@ public class SelectSeat extends AppView implements ActionListener, ItemListener 
 
 	public void setInfotoLabel() {
 		titleLabel.setText(ticket.getCustomerName() + " 님");
-		titleLabel.setFont(new Font("휴먼엑스포", Font.PLAIN, 15));
+		titleLabel.setFont(new Font("휴먼엑스포", Font.PLAIN, 15))	;
 		airplaneLabel.setText(ticket.getAirNum());
 		dateLabel.setText(ticket.getDepDate());
-		personLabel.setText(Integer.toString(ticket.getHumanCnt()) + "명");
+		personLabel.setText(Integer.toString(ticket.getHumanCnt()) +"명");
 		costLabel.setText(Integer.toString(ticket.getCost()));
 
 		person = ticket.getHumanCnt();
 		// 좌석 하나 눌렀을때 Label 이 찍은 좌석으로 변경.
 		// 인원수에 맞게 좌석을 다 눌렀을 경우, 모든 좌석 체크 못하도록 변경 한다.
-
 	}
 
 	// 인원수 만큼 좌석 check 해주는거 넣어주기 .
@@ -136,9 +140,9 @@ public class SelectSeat extends AppView implements ActionListener, ItemListener 
 				int col = Integer.parseInt(colStr) - 1;
 				seats[row][col].setSelected(false);
 			}
-
+			
 			for (int i = 0; i < reservedSeat.size(); i++) {
-				// System.out.println(reservedSeat.get(i) + " 좌석이 예약되어 있음. ");
+				//System.out.println(reservedSeat.get(i) + " 좌석이 예약되어 있음. ");
 				String text = reservedSeat.get(i);
 				int row = text.charAt(0); // 행값
 				String colStr = text.substring(1);// 1뒤에 있는 값 가져와야됨.
@@ -163,7 +167,7 @@ public class SelectSeat extends AppView implements ActionListener, ItemListener 
 
 		reservedSeat = sDao.getSeatList(airnum, depDate);
 		for (int i = 0; i < reservedSeat.size(); i++) {
-			// System.out.println(reservedSeat.get(i) + " 좌석이 예약되어 있음. ");
+			//System.out.println(reservedSeat.get(i) + " 좌석이 예약되어 있음. ");
 			String text = reservedSeat.get(i);
 			int row = text.charAt(0); // 행값
 			String colStr = text.substring(1);// 1뒤에 있는 값 가져와야됨.
@@ -171,9 +175,9 @@ public class SelectSeat extends AppView implements ActionListener, ItemListener 
 			int col = Integer.parseInt(colStr) - 1;
 			seats[row][col].setEnabled(false);
 		}
-
-		int leftSeat = (80 - reservedSeat.size());
-		seatInfoDetailLabel.setText(Integer.toString(leftSeat) + " / 80");
+		
+		int leftSeat = (row*col - reservedSeat.size());
+		seatInfoDetailLabel.setText(Integer.toString(leftSeat) + " / " + row * col );
 	}
 
 	// 좌석을 완벽히 선택하면 실행되는 메서드
@@ -181,36 +185,36 @@ public class SelectSeat extends AppView implements ActionListener, ItemListener 
 		// setReserveDate
 		String seatNumberCheck = "";
 		// set SeatDTO reserved
-		for (int i = 0; i < person; i++) {
+		for (int i = 0; i < person; i++) {	
 			// 인원수만큼 티켓 DTO를 만들어준다.
 			// SeatDTO ~ reserved 되게 변경
 			SeatDTO seatDTO = new SeatDTO();
 			seatDTO.setAirnum(ticket.getAirNum());
+			seatDTO.setSeatGrade(ticket.getSeatGrade());
 			seatDTO.setReserved("y");
 			seatDTO.setDepDate(ticket.getReserveDate());
 			seatDTO.setSeatNumber(seatsNumber.get(i)); // 좌석 번호 넣기
-			// System.out.println(seatDTO.toString());
+			//System.out.println(seatDTO.toString());
 			sDao.setSeatReserved(seatDTO);
-
-			// seatNumber만들기
-			if ((person - 1) == i) {
+				
+			//seatNumber만들기
+			if((person-1) == i ) {
 				seatNumberCheck += seatsNumber.get(i);
 			} else {
-				seatNumberCheck += (seatsNumber.get(i) + "/");
+				seatNumberCheck += (seatsNumber.get(i)+"/");
 			}
-		}
-		;
+		};
 		// 티켓 도 만들어 줘야함.
 		ticket.setSeatNumber(seatNumberCheck);
 		// ticket insert
-		ticketDao.insert(ticket); // 티켓등록
-		// TicketConfirmView ticketConfirmView = new TicketConfirmView(ticket);
+		ticketDao.insert(ticket); //티켓등록 
+		//TicketConfirmView ticketConfirmView = new TicketConfirmView(ticket);
 	}
 
 	// 모든 좌석 못누르게 하기.
 	public void seatAlldisabledchecked() {
-		for (int j = 0; j < 10; j++) {
-			for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < row; j++) {
+			for (int i = 0; i < col; i++) {
 				seats[j][i].setEnabled(false);
 			}
 		}
@@ -219,8 +223,8 @@ public class SelectSeat extends AppView implements ActionListener, ItemListener 
 
 	// 모든 좌석 누를 수있게 변경.
 	public void seatAllchecked() {
-		for (int j = 0; j < 10; j++) {
-			for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < row; j++) {
+			for (int i = 0; i < col; i++) {
 				seats[j][i].setEnabled(true);
 			}
 		}
@@ -264,8 +268,8 @@ public class SelectSeat extends AppView implements ActionListener, ItemListener 
 	}
 
 	public void setEvent() {
-		for (int j = 0; j < 10; j++) {
-			for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < row; j++) {
+			for (int i = 0; i < col; i++) {
 				seats[j][i].addItemListener(new SeatChangeListener());
 			}
 		}
@@ -382,8 +386,9 @@ public class SelectSeat extends AppView implements ActionListener, ItemListener 
 		panel_1.add(reCheckSeatButton);
 		reCheckSeatButton.setEnabled(false);
 		// repaint();
-		// 열
-		for (int i = 0; i < 8; i++) {
+		getRowAndCol();
+		// 행	
+		for (int i = 0; i < row; i++) {
 			JLabel seatColLabel = new JLabel();
 			char input = (char) ('A' + i);
 			seatColLabel.setText(Character.toString(input));
@@ -393,8 +398,8 @@ public class SelectSeat extends AppView implements ActionListener, ItemListener 
 
 		}
 
-		// 행
-		for (int i = 0; i < 10; i++) {
+		// 열
+		for (int i = 0; i < col; i++) {
 			JLabel seatRowLabel = new JLabel();
 			String input = Integer.toString(i + 1);
 			seatRowLabel.setText(input);
@@ -404,8 +409,8 @@ public class SelectSeat extends AppView implements ActionListener, ItemListener 
 		}
 
 		// 좌석 checkBox
-		for (int j = 0; j < 10; j++) {
-			for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < row; j++) {
+			for (int i = 0; i < col; i++) {
 				JCheckBox chkBox = new JCheckBox("");
 				chkBox.setBackground(Color.WHITE);
 				chkBox.setForeground(Color.WHITE);
@@ -414,10 +419,19 @@ public class SelectSeat extends AppView implements ActionListener, ItemListener 
 				char input = (char) (j + 65);
 				chkBox.setText(input + "," + Integer.toString(i + 1)); // 좌석의 값들을 얻을 수 잇음.
 				panel_2.add(chkBox);
+				}
 			}
-		}
-	}
 
+		}
+
+		private void getRowAndCol() {
+		
+		RowAndCol = sDao.getRowAndCol(seat.getAirnum(), seat.getSeatGrade());
+		row = RowAndCol.get(0);
+		col = RowAndCol.get(1);
+	}
+		
+		
 	private Object action(int ii) {
 		return null;
 	}
