@@ -3,8 +3,10 @@ package entity;
 public class AirplaneDTO {
 	private int airNum;
 	private String depPlace;
-	private String depDate;
 	private String arrPlace;
+	private String depDate;
+	private String arrDate;
+	private String depTime;
 	private String arrTime;
 	public int getAirNum() {
 		return airNum;
@@ -18,11 +20,23 @@ public class AirplaneDTO {
 	public void setDepPlace(String depPlace) {
 		this.depPlace = depPlace;
 	}
+	public String getDepTime() {
+		return depTime;
+	}
+	public void setDepTime(String depTime) {
+		this.depTime = depTime;
+	}
 	public String getDepDate() {
 		return depDate;
 	}
 	public void setDepDate(String depDate) {
 		this.depDate = depDate;
+	}
+	public String getArrDate() {
+		return arrDate;
+	}
+	public void setArrDate(String arrDate) {
+		this.arrDate = arrDate;
 	}
 	public String getArrPlace() {
 		return arrPlace;
