@@ -17,6 +17,7 @@ import javax.swing.JPanel;
 import com.toedter.calendar.JDateChooser;
 
 import app.AppView;
+import dao.DAO;
 import dao.TicketDAO;
 import entity.TicketDTO;
 
@@ -175,11 +176,9 @@ public class ReservView extends AppView{
 		
 		nextBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
 				// 좌석 등급 선택 값 가져오기
 				String seatGrade = seatCombo.getSelectedItem().toString();
 				System.out.println(seatGrade);
-				
 				
 				// 출발지 선택 값 가져오기
 				String depPlace = depCombo.getSelectedItem().toString();
@@ -206,6 +205,7 @@ public class ReservView extends AppView{
 				
 				ticketDTO = new TicketDTO();
 				
+				ticketDTO.setSeatGrade(seatGrade);
 				ticketDTO.setDepPlace(depPlace);
 				ticketDTO.setArrPlace(arrPlace);
 				ticketDTO.setDepDate(depDate);
@@ -213,6 +213,7 @@ public class ReservView extends AppView{
 				ticketDTO.setAdultCnt(adultCnt);
 				ticketDTO.setKidCnt(kidCnt);
 				ticketDTO.setHumanCnt(humanCnt);
+				DAO.sql.insert("Ticket",ticketDTO);
 				
 				// 알림 메시지 - 메시지 출력 / 내용이 같으면 출력 후 선택 값 초기화
 				if(depPlace.equals(arrPlace)) {
@@ -226,7 +227,7 @@ public class ReservView extends AppView{
 				} else if(humanCnt > 5){
 					JOptionPane.showMessageDialog(null, "본인 포함한 5명을 초과하여 예약할 수 없습니다. \n단체 예약은 관리자에게 문의하시기 바랍니다.", "5명 초과", JOptionPane.INFORMATION_MESSAGE);
 				} else if(e!=null) { // 해당 사항 없으면 좌석 선택 페이지로 이동
-					reserv.openSeatView();
+					reserv.openSeatView(ticketDTO);
 					return;
 				}
 				
