@@ -203,6 +203,7 @@ public class ReservView extends AppView{
 				int humanCnt = adultCnt + kidCnt;
 				System.out.println("인원 수: " + humanCnt + " 성인: " + adultCnt + " 소아: " + kidCnt);
 				
+				// DTO로 선택 값 전송
 				ticketDTO = new TicketDTO();
 				
 				ticketDTO.setSeatGrade(seatGrade);
@@ -213,6 +214,7 @@ public class ReservView extends AppView{
 				ticketDTO.setAdultCnt(adultCnt);
 				ticketDTO.setKidCnt(kidCnt);
 				ticketDTO.setHumanCnt(humanCnt);
+				// DB 테이블 "TICKET"에 추가
 				DAO.sql.insert("Ticket",ticketDTO);
 				
 				// 알림 메시지 - 메시지 출력 / 내용이 같으면 출력 후 선택 값 초기화
