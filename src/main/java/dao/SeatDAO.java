@@ -88,6 +88,43 @@ public class SeatDAO {
 		} catch (SQLException e) {
 		}
 	}
+	public ArrayList<Integer> getRowAndCol(String airnum, String seatgrade) {
+	
+	String sql   = "";
+	sql         += "SELECT SUBSTR(SEATNUMBER,1,1) ROW, SUBSTR(SEATNUMBER2,1) FROM SEAT COL";
+	sql         += " WHERE AIRNUM = ?  AND SEATGARDE = ?";
+	ArrayList<Integer> list = new ArrayList<>();
+		
+	PreparedStatement pstmt = null;
+	ResultSet rs = null;
+		
+	try {
+		pstmt = conn.prepareStatement(sql);
+		if(rs.next()) {
+			int row = rs.getInt("ROW");
+			int col = rs.getInt("COL");
+			list.add(row);
+			list.add(col);
+		}
+		pstmt.executeUpdate();
+	} catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}finally {
+	try {
+		if( rs    != null )rs.close();
+		if( pstmt != null)pstmt.close();
+	} catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+		
+	}
+	return list;
+		
+	}
+
+}
 }
 
 
