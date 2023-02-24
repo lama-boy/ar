@@ -15,7 +15,7 @@ public class Reservation extends SubApp {
 //		AppService.getInstance().openView(payment);
 //		System.out.println(ticketDTO);
 //	}
-	public void openReservView(TicketDTO ticketDTO) {
+	public void openReservView() {
 		AppService.getInstance().openView(reservView);
 	}
 	
