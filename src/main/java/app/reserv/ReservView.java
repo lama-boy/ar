@@ -17,7 +17,6 @@ import javax.swing.JPanel;
 import com.toedter.calendar.JDateChooser;
 
 import app.AppView;
-import app.SubApp;
 
 public class ReservView extends AppView{
 	private Reservation reserv;
@@ -136,7 +135,7 @@ public class ReservView extends AppView{
 		JButton cancelBtn = new JButton("예약취소");
 		cancelBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				reserv.requestView();
 			}
 		});
 		cancelBtn.setForeground(new Color(255, 0, 0));
@@ -166,16 +165,11 @@ public class ReservView extends AppView{
 		
 		//--------------------------------------------------------------------------
 		
-		// 다음 단계: 누르면 선택한 값들이 모두 DB로 전송되고 좌석 선택 페이지로 이동
+		// 다음 단계: 누르면 선택한 값들이 DTO로 전달되고 좌석 선택 페이지로 이동
 		JButton nextBtn = new JButton("다음단계");
 		
 		nextBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(e!=null) {
-					reserv.openSeatView();
-					return;
-				}
-				
 				// 좌석 등급 선택 값 가져오기
 				String seatGrade = seatCombo.getSelectedItem().toString();
 				System.out.println(seatGrade);
@@ -214,6 +208,9 @@ public class ReservView extends AppView{
 					arrDateChooser.setCalendar(null);
 				} else if(humanCnt > 5){
 					JOptionPane.showMessageDialog(null, "본인 포함한 5명을 초과하여 예약할 수 없습니다. \n단체 예약은 관리자에게 문의하시기 바랍니다.", "5명 초과", JOptionPane.INFORMATION_MESSAGE);
+				} else if(e!=null) { // 해당 사항 없으면 좌석 선택 페이지로 이동
+					reserv.openSeatView();
+					return;
 				}
 				
 			}
