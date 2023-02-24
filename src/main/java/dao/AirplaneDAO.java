@@ -34,8 +34,8 @@ public class AirplaneDAO {
 			AirplaneDTO schedule = null;
 			
 			String sql = "";
-			sql       += "SELECT AIR ";
-			sql       += " FROM AIRPLANE";
+			sql       += "SELECT * ";
+			sql       += " FROM AIRPLAN";
 			
 			
 			PreparedStatement pstmt = null;
@@ -45,18 +45,22 @@ public class AirplaneDAO {
 				
 				rs    = pstmt.executeQuery();
 				while(rs.next()) {
-					int    airNum   = rs.getInt("AIRNUM");
-					String dptPlace = rs.getString("DPTPLACE"); 
-					String dptTime  = rs.getString("DPTTime"); 
-					String arrPlace = rs.getString("ARRPLACE"); 
+					String airNum   = rs.getString("AIRNUM");
+					String depPlace = rs.getString("DEPPLACE"); 
+					String arrPlace = rs.getString("ARRPLACE");
+					String depTime  = rs.getString("DEPTIME"); 
 					String arrTime  = rs.getString("ARRTIME"); 
+					String startDate  = rs.getString("STARTDATE");
+					String endDate = rs.getString("ENDDATE");
 					
 					Vector v = new Vector();
 					v.add(airNum);
-					v.add(dptPlace);
-					v.add(dptTime);
+					v.add(depPlace);
+					v.add(depTime);
 					v.add(arrPlace);
 					v.add(arrTime);
+					v.add(startDate);
+					v.add(endDate);
 					
 					list.add(v);
 				}
@@ -72,4 +76,5 @@ public class AirplaneDAO {
 			
 			return list;
 		}
+		
 }
