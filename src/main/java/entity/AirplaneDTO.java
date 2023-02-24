@@ -2,8 +2,8 @@ package entity;
 
 public class AirplaneDTO {
 	private String airNum;
-	private String depCountry;
-	private String arrCountry;
+	private String depPlace;
+	private String arrPlace;
 	private String depDate;
 	private String arrDate;
 	private String depTime;
@@ -15,10 +15,10 @@ public class AirplaneDTO {
 		this.airNum = airNum;
 	}
 	public String getDepCountry() {
-		return depCountry;
+		return depPlace;
 	}
-	public void setDepCountry(String depCountry) {
-		this.depCountry = depCountry;
+	public void setDepPlace(String depPlace) {
+		this.depPlace = depPlace;
 	}
 	public String getDepTime() {
 		return depTime;
@@ -52,7 +52,7 @@ public class AirplaneDTO {
 	}
 	@Override
 	public String toString() {
-		return "AirplaneDTO [airNum=" + airNum + ", depCountry=" + depCountry + ", depDate=" + depDate + ", arrCountry="
+		return "AirplaneDTO [airNum=" + airNum + ", depPlace=" + depPlace + ", depDate=" + depDate + ", arrCountry="
 				+ arrCountry + ", arrTime=" + arrTime + "]";
 	}
 
