@@ -1,24 +1,24 @@
 package entity;
 
 public class AirplaneDTO {
-	private int airNum;
-	private String depPlace;
-	private String arrPlace;
+	private String airNum;
+	private String depCountry;
+	private String arrCountry;
 	private String depDate;
 	private String arrDate;
 	private String depTime;
 	private String arrTime;
-	public int getAirNum() {
+	public String getAirNum() {
 		return airNum;
 	}
-	public void setAirNum(int airNum) {
+	public void setAirNum(String airNum) {
 		this.airNum = airNum;
 	}
-	public String getDepPlace() {
-		return depPlace;
+	public String getDepCountry() {
+		return depCountry;
 	}
-	public void setDepPlace(String depPlace) {
-		this.depPlace = depPlace;
+	public void setDepCountry(String depCountry) {
+		this.depCountry = depCountry;
 	}
 	public String getDepTime() {
 		return depTime;
@@ -38,11 +38,11 @@ public class AirplaneDTO {
 	public void setArrDate(String arrDate) {
 		this.arrDate = arrDate;
 	}
-	public String getArrPlace() {
-		return arrPlace;
+	public String getarrCountry() {
+		return arrCountry;
 	}
-	public void setArrPlace(String arrPlace) {
-		this.arrPlace = arrPlace;
+	public void setarrCountry(String arrCountry) {
+		this.arrCountry = arrCountry;
 	}
 	public String getArrTime() {
 		return arrTime;
@@ -52,8 +52,8 @@ public class AirplaneDTO {
 	}
 	@Override
 	public String toString() {
-		return "AirplaneDTO [airNum=" + airNum + ", depPlace=" + depPlace + ", depDate=" + depDate + ", arrPlace="
-				+ arrPlace + ", arrTime=" + arrTime + "]";
+		return "AirplaneDTO [airNum=" + airNum + ", depCountry=" + depCountry + ", depDate=" + depDate + ", arrCountry="
+				+ arrCountry + ", arrTime=" + arrTime + "]";
 	}
 
 }
